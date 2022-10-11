@@ -4,7 +4,7 @@
 1. 로컬 환경에서 원하는 위치에서 `git bash` 를 실행한다. 아래 명령어를 입력한다.
 
 ```` bash
-    git clone url
+    git clone https://github.com/Duaily/backend.git
 ````
 
 2. `Docker Desktop`을 실행한다. <br/>
