@@ -1,0 +1,52 @@
+spring:
+  profiles:
+    group:
+      "local": "test_db,common"
+      "dev" : "test_db,common"
+      "prod" : "prod_db,common"
+---
+# local, dev, prod ?? ??
+spring:
+  config:
+    activate:
+      on-profile: "common"
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: utf-8
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "test_db"
+    datasource:
+      url: jdbc:mysql://localhost:3305/test_db
+      username: test
+      password: test_pw
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+    redis:
+      host: localhost
+      port: 6378
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "prod_db"
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: ${RDS_URL}
+      username: ${RDS_USERNAME}
+      password: ${RDS_PASSWORD}
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+    redis:
+      host: ${REDIS_URL}
+      port: 6378
