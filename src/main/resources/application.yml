@@ -9,4 +9,8 @@ spring:
     show-sql: true
   redis:
     host: localhost
+<<<<<<< Updated upstream
     port: 6378
+=======
+    port: 6378
+>>>>>>> Stashed changes
