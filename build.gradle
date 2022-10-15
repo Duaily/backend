@@ -22,10 +22,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-<<<<<<< Updated upstream
-=======
     implementation 'org.springframework.boot:spring-boot-starter-validation'
->>>>>>> Stashed changes
     implementation 'org.springframework.session:spring-session-data-redis:2.6.3'
     implementation 'mysql:mysql-connector-java:8.0.29'
     compileOnly 'org.projectlombok:lombok'
