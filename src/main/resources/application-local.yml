@@ -1,0 +1,35 @@
+spring:
+  ## RDB 설정
+  datasource:
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  ## Multi-part 설정
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  ## JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+  ## jwt 설정
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token: 3600000
+    refresh-token: 604800000
+  ## Redis 설정
+  redis:
+    host: ${REDIS_URL}
+    port: 6378
+## SMS 설정
+custom:
+  sms:
+    service-id: ${SMS_ID}
+    access-key: ${SMS_KEY}
+    secret-key: ${SMS_SECRET_KEY}
