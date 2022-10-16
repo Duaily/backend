@@ -9,12 +9,14 @@ import com.kusitms.backend.repository.UserRepository;
 import com.kusitms.backend.util.RedisClient;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthService implements IAuthService {
@@ -45,6 +47,7 @@ public class AuthService implements IAuthService {
         .contact(request.getContact())
         .authority(Authority.ROLE_USER)
         .build();
+
     userRepository.save(user);
   }
 

@@ -1,5 +1,6 @@
 package com.kusitms.backend;
 
+import com.kusitms.backend.domain.Authority;
 import com.kusitms.backend.domain.User;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -29,9 +30,10 @@ public class InitUser {
     public void init() {
       User user = User.builder()
           .email("test@test.com")
-          .password(passwordEncoder.encode("test12"))
+          .password(passwordEncoder.encode("test12345"))
           .contact("010-0000-0000")
-          .nickname("Dual")
+          .nickname("Dual-test")
+          .authority(Authority.ROLE_USER)
           .build();
       entityManager.persist(user);
     }

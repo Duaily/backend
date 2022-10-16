@@ -17,7 +17,7 @@ public class AuthDto {
     String email;
     @NotBlank(message = "닉네임을 입력해주세요.")
     String nickname;
-    @NotBlank
+    @NotBlank(message = "전화번호를 입력해주세요.")
     String contact;
   }
 

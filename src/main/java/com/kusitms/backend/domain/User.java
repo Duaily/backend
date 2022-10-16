@@ -14,15 +14,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class User extends MetaEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "user_id")
+  @GeneratedValue
   private Long id;
   @Column(nullable = false, unique = true)
   private String nickname;
@@ -35,4 +32,13 @@ public class User extends MetaEntity {
 
   @Enumerated(EnumType.STRING)
   private Authority authority;
+
+  @Builder
+  public User(String nickname, String contact, String email, String password, Authority authority) {
+    this.nickname = nickname;
+    this.contact = contact;
+    this.email = email;
+    this.password = password;
+    this.authority = authority;
+  }
 }
