@@ -31,7 +31,6 @@ public class InitUser {
           .email("test@test.com")
           .password(passwordEncoder.encode("test12"))
           .contact("010-0000-0000")
-          .address("서울시 마포구")
           .nickname("Dual")
           .build();
       entityManager.persist(user);
