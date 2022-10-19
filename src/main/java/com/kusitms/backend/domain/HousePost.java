@@ -1,23 +1,20 @@
 package com.kusitms.backend.domain;
 
-import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@DiscriminatorValue("housePost")
 @Getter
 @Entity
-public class HousePost {
+public class HousePost extends Post {
 
-  @Id
-  @GeneratedValue
-  @Column(name = "house_post_id")
-  private Long id;
+  @OneToOne
+  private House house;
 
+  @OneToOne
+  private Region region;
 }

@@ -1,14 +1,18 @@
 package com.kusitms.backend.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Entity
 public class Comment extends MetaEntity {
 
@@ -18,6 +22,7 @@ public class Comment extends MetaEntity {
   private Long id;
   private String content;
 
-  public Comment() {}
-
+  @ManyToOne
+  @JoinColumn(name = "commenter_id")
+  private User commenter;
 }

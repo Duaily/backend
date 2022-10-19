@@ -1,22 +1,18 @@
 package com.kusitms.backend.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Entity
@@ -27,12 +23,14 @@ public class House extends MetaEntity {
   @Column(name = "house_id")
   private Long id;
 
-  private String address; // 도로명 주소
+  @Embedded
+  private Address address; // 도로명 주소
   private String price; // 구체적 가격
-  private String size;
-  private LocalDateTime createdDate;
+  private String size; // 집 크기
+  private LocalDateTime createdDate; // 준공연도
   private String purpose; // 용도
 
-  public House() {}
-
+  @ManyToOne
+  @JoinColumn(name = "owner_id")
+  private User owner;
 }

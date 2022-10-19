@@ -1,15 +1,15 @@
 package com.kusitms.backend.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends MetaEntity {
@@ -40,13 +41,16 @@ public class User extends MetaEntity {
   @Enumerated(EnumType.STRING)
   private Authority authority;
 
-  @Builder
-  public User(String nickname, String contact, String email, String password, Authority authority) {
-    this.nickname = nickname;
-    this.contact = contact;
-    this.email = email;
-    this.password = password;
-    this.authority = authority;
-    this.status = 0;
-  }
+  @OneToMany(mappedBy = "owner")
+  private Set<House> houses;
+
+  @ManyToMany
+  @JoinTable(name = "writer_post",
+      joinColumns = @JoinColumn(name = "writer_id"),
+      inverseJoinColumns = @JoinColumn(name = "post_id"))
+      private Set<Post> posts;
+
+  @OneToMany
+  @JoinColumn(name = "commenter_id")
+  private Set<Comment> comments;
 }
