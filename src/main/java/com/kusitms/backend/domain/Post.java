@@ -11,6 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +32,9 @@ public abstract class Post extends MetaEntity {
 
   @Size(max = 20)
   private String title; // 제목
-  private String imageUrl; // 대표사진
+
+  @OneToOne
+  private ImageFile imageFile; // 대표사진
 
   @ManyToMany(mappedBy = "post")
   private Set<User> writer;

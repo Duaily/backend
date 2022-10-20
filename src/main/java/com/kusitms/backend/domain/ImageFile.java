@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,17 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Tour extends MetaEntity {
+public class ImageFile extends MetaEntity {
 
   @Id
   @GeneratedValue
-  @Column(name = "tour_id")
+  @Column(name = "image_id")
   private Long id;
 
-  private String name; // 관광지명
-  private String content; // 간단소개
-
-  @OneToOne
-  private ImageFile imageFile; // 대표 이미지
-
+  private String imageUrl;
 }
