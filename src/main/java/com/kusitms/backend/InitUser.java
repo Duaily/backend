@@ -36,6 +36,15 @@ public class InitUser {
           .authority(Authority.ROLE_USER)
           .build();
       entityManager.persist(user);
+
+      User broker = User.builder()
+          .nickname("듀얼리중개사")
+          .contact("010-1234-5678")
+          .email("duaily@test.com")
+          .password("duaily1234")
+          .authority(Authority.ROLE_BROKER)
+          .build();
+      entityManager.persist(broker);
     }
   }
 }
