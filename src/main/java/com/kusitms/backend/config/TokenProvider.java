@@ -12,9 +12,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,11 +38,12 @@ public class TokenProvider {
   @Value("${spring.jwt.refresh-token}")
   private long refreshTokenExpireTime;
 
-  private Key key;
+  @Value("${spring.jwt.secret}")
+  private String secret;
 
-  public TokenProvider(@Value("${spring.jwt.secret}") String secret) {
-    byte[] keyBytes = Decoders.BASE64.decode(secret);
-    this.key = Keys.hmacShaKeyFor(keyBytes);
+  @PostConstruct
+  protected void init() {
+    secret = Base64.getEncoder().encodeToString(secret.getBytes());
   }
 
   public long getRefreshTokenExpireTime() {
@@ -59,7 +62,7 @@ public class TokenProvider {
         .setSubject(authentication.getName())
         .claim(AUTHORITIES_KEY, authorities)
         .setExpiration(accessTokenExpires)
-        .signWith(key, SignatureAlgorithm.HS512)
+        .signWith(SignatureAlgorithm.HS512, secret)
         .compact();
 
     return accessToken;
@@ -84,7 +87,7 @@ public class TokenProvider {
 
   public boolean validateToken(String token) {
     try {
-      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+      Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
       return true;
     } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
       log.info("잘못된 JWT 서명입니다.");
@@ -101,9 +104,9 @@ public class TokenProvider {
   public Claims parseClaims(String accessToken) {
     try {
       return Jwts.parserBuilder()
-          .setSigningKey(key)
+          .setSigningKey(secret)
           .build()
-          .parseClaimsJwt(accessToken)
+          .parseClaimsJws(accessToken)
           .getBody();
     } catch (ExpiredJwtException e) {
       return e.getClaims();
