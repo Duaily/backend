@@ -41,7 +41,7 @@ public class InitUser {
           .nickname("듀얼리중개사")
           .contact("010-1234-5678")
           .email("duaily@test.com")
-          .password("duaily1234")
+          .password(passwordEncoder.encode("duaily1234"))
           .authority(Authority.ROLE_BROKER)
           .build();
       entityManager.persist(broker);

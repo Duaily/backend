@@ -2,6 +2,7 @@ package com.kusitms.backend.controller;
 
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.SignInRequest;
+import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.AuthService;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +30,9 @@ public class AuthController {
   @PostMapping("/sign-in")
   public ResponseEntity<BaseResponse> signIn(@RequestBody @Validated SignInRequest request,
       HttpServletResponse response) {
-    String accessToken = authService.signIn(request);
-    response.addHeader("Authorization", "Bearer " + accessToken);
+    TokenDto tokens = authService.signIn(request);
+    response.addHeader("Authorization", "Bearer " + tokens.getAccessToken());
+
     return ResponseEntity.ok(BaseResponse.builder().message("로그인에 성공하셨습니다.").build());
   }
 

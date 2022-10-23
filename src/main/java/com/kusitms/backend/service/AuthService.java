@@ -1,18 +1,19 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.config.CustomUserDetailService;
 import com.kusitms.backend.config.TokenProvider;
 import com.kusitms.backend.domain.Authority;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.SignInRequest;
+import com.kusitms.backend.dto.TokenDto;
+import com.kusitms.backend.exception.ApiException;
+import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.UserRepository;
 import com.kusitms.backend.util.RedisClient;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,20 +22,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService implements IAuthService {
 
-  private final AuthenticationManagerBuilder builder;
+  private final CustomUserDetailService customUserDetailService;
   private final TokenProvider tokenProvider;
   private final PasswordEncoder passwordEncoder;
   private final RedisClient redisClient;
 
   private final UserRepository userRepository;
 
-  public String signIn(SignInRequest request) {
-    UsernamePasswordAuthenticationToken authenticationToken
-        = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+  public TokenDto signIn(SignInRequest request) {
 
-    Authentication authentication = builder.getObject().authenticate(authenticationToken);
+    User user = (User) customUserDetailService.loadUserByUsername(request.getEmail());
+    checkPassword(request.getPassword(), user.getPassword());
 
-    return tokenProvider.generateTokenDto(authentication);
+    String accessToken = tokenProvider.createAccessToken(user.getEmail());
+    String refreshToken = tokenProvider.createRefreshToken(user);
+    return TokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+  }
+
+  private void checkPassword(String request, String origin) {
+
+    if (!passwordEncoder.matches(request, origin)) {
+      throw new ApiException(ApiExceptionEnum.BAD_REQUEST_EXCEPTION);
+    }
   }
 
   //회원가입
