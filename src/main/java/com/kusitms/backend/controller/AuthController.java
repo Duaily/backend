@@ -5,6 +5,7 @@ import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.AuthService;
+import com.kusitms.backend.service.IAuthService;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthService authService;
+  private final IAuthService authService;
 
   @PostMapping("/sign-in")
   public ResponseEntity<BaseResponse> signIn(@RequestBody @Validated SignInRequest request,
