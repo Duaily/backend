@@ -1,0 +1,23 @@
+= Dualiy REST API DOCS
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+
+== 1. 개요
+
+본 문서는 Dualiy REST API 문서입니다.
+각 문서는 도메인을 기준으로 분리하였습니다.
+
+== 2. Auth
+=== 2-1. 로컬 로그인
+===== Request
+include::{snippets}/sign-in/http-request.adoc[]
+===== Request Example
+include::{snippets}/sign-in/request-body.adoc[]
+
+===== Response Example
+include::{snippets}/sign-in/http-response.adoc[]
+===== Response Fields
+include::{snippets}/sign-in/response-fields.adoc[]
+
+== 3. House

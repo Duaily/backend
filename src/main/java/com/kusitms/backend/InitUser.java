@@ -15,7 +15,7 @@ public class InitUser {
 
   private final InitUserService initUserService;
 
-  @PostConstruct
+  // @PostConstruct
   public void init() {
     initUserService.init();
   }
@@ -23,6 +23,7 @@ public class InitUser {
   @Component
   @RequiredArgsConstructor
   static class InitUserService {
+
     private final EntityManager entityManager;
     private final PasswordEncoder passwordEncoder;
 
@@ -35,16 +36,20 @@ public class InitUser {
           .nickname("Dual-test")
           .authority(Authority.ROLE_USER)
           .build();
-      entityManager.persist(user);
 
       User broker = User.builder()
           .nickname("듀얼리중개사")
           .contact("010-1234-5678")
           .email("duaily@test.com")
-          .password("duaily1234")
+          .password(passwordEncoder.encode("duaily1234"))
           .authority(Authority.ROLE_BROKER)
           .build();
-      entityManager.persist(broker);
+
+      if (!entityManager.contains(user)) {
+        entityManager.persist(user);
+        entityManager.persist(broker);
+
+      }
     }
   }
 }

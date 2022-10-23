@@ -10,3 +10,7 @@ spring:
   redis:
     host: localhost
     port: 6378
+
+  profiles:
+    include:
+      secret

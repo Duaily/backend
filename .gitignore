@@ -4,6 +4,10 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+/src/main/resources/application-prod.yml
+
+### MAC OS ###
+.DS_Store
 
 ### STS ###
 .apt_generated
@@ -38,3 +42,5 @@ out/
 
 ### env ###
 /config/local.env
+application-secret.yml
+application-test.yml
