@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class RegionPost extends Post {
 
-  private String content;
+  private String content; // 한 줄 가치 표현
 
   @OneToOne
   private Region region;

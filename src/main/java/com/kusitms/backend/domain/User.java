@@ -1,5 +1,7 @@
 package com.kusitms.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -44,11 +44,9 @@ public class User extends MetaEntity {
   @OneToMany(mappedBy = "owner")
   private Set<House> houses;
 
-  @ManyToMany
-  @JoinTable(name = "writer_post",
-      joinColumns = @JoinColumn(name = "writer_id"),
-      inverseJoinColumns = @JoinColumn(name = "post_id"))
-      private Set<Post> posts;
+  @OneToMany(mappedBy = "user")
+  @JsonManagedReference
+  private List<Post> posts;
 
   @OneToMany
   @JoinColumn(name = "commenter_id")

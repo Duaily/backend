@@ -1,17 +1,15 @@
 package com.kusitms.backend.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,7 +28,11 @@ public class Region extends MetaEntity {
   private String origin; // 지역 유래
   private String info; // 지역 정보
 
-  @OneToMany
+  @Embedded
+  private Address address; // 지역 위치
+
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "region_id")
-  private Set<Tour> tours;
+  private Set<ImageFile> imageFiles;
+
 }
