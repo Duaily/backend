@@ -20,6 +20,8 @@ public class Comment extends MetaEntity {
   @GeneratedValue
   @Column(name = "comment_id")
   private Long id;
+
+  @Column(length = 400)
   private String content;
 
   @ManyToOne
