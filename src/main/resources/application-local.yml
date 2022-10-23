@@ -27,9 +27,3 @@ spring:
   redis:
     host: ${REDIS_URL}
     port: 6378
-## SMS 설정
-custom:
-  sms:
-    service-id: ${SMS_ID}
-    access-key: ${SMS_KEY}
-    secret-key: ${SMS_SECRET_KEY}
