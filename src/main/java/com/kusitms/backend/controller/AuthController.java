@@ -31,8 +31,8 @@ public class AuthController {
   @PostMapping("/sign-in")
   public ResponseEntity<BaseResponse> signIn(@RequestBody @Validated SignInRequest request,
       HttpServletResponse response) {
-    TokenDto tokens = authService.signIn(request);
-    response.addHeader("Authorization", "Bearer " + tokens.getAccessToken());
+    String accessToken = authService.signIn(request);
+    response.addHeader("Authorization", "Bearer " + accessToken);
 
     return ResponseEntity.ok(BaseResponse.builder().message("로그인에 성공하셨습니다.").build());
   }

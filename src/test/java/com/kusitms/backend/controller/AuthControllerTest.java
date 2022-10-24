@@ -2,6 +2,7 @@ package com.kusitms.backend.controller;
 
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentRequest;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -77,12 +78,7 @@ class AuthControllerTest {
         .password("test12345")
         .build();
 
-    TokenDto response = TokenDto.builder()
-        .accessToken("accessToken")
-        .refreshToken("refreshToken")
-        .build();
-
-    given(authService.signIn(dto)).willReturn(response);
+    given(authService.signIn(dto)).willReturn(anyString());
 
     String data = objectMapper.writeValueAsString(dto);
 

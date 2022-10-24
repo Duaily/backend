@@ -18,29 +18,55 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@RequiredArgsConstructor
 @EnableWebSecurity
-@Configuration
-public class SecurityConfig {
+@RequiredArgsConstructor
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private final TokenProvider tokenProvider;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+  private final JwtSecurityConfig jwtSecurityConfig;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.httpBasic().disable()
-        .csrf().disable()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable()
+        .cors().configurationSource(corsConfigurationSource())
+
+        .and()
+        .exceptionHandling()
+        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        .accessDeniedHandler(jwtAccessDeniedHandler)
+
+        .and()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
         .and()
         .authorizeRequests()
-        .anyRequest().permitAll()
-        .and()
-        .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        .antMatchers("/api/auth/**", "/v2/api-docs").permitAll()
+        .anyRequest().authenticated()
 
-    return http.build();
+        .and()
+        .apply(jwtSecurityConfig);
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+
+    configuration.addExposedHeader("Authorization");  //브라우저에서 접근가능한 헤더
+    configuration.addAllowedOriginPattern("*");
+    configuration.addAllowedHeader("*");
+    configuration.addAllowedMethod("*");
+    configuration.setAllowCredentials(true); //Authorization 으로 사용자 인증처리 여부
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
   }
 }
