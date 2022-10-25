@@ -10,7 +10,12 @@ spring:
   redis:
     host: localhost
     port: 6378
-
   profiles:
     include:
       secret
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR
