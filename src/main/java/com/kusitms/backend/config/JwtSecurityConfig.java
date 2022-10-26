@@ -6,21 +6,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Component
 @RequiredArgsConstructor
 public class JwtSecurityConfig
-    implements WebMvcConfigurer {
+    extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-  private final JwtAuthInterceptor jwtAuthInterceptor;
+  private final JwtFilter jwtFilter;
 
   @Override
-  public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(jwtAuthInterceptor)
-        .addPathPatterns("/**")
-        .excludePathPatterns("/api/auth/**", "/docs/**");
+  public void configure(HttpSecurity builder) throws Exception {
+    builder.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
   }
+
 }

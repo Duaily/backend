@@ -36,6 +36,9 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis:2.6.3'
     implementation 'mysql:mysql-connector-java:8.0.29'
 
+    // aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'

@@ -1,35 +1,25 @@
 package com.kusitms.backend.config;
 
-import com.kusitms.backend.domain.User;
-import com.kusitms.backend.exception.ApiException;
-import com.kusitms.backend.exception.ApiExceptionEnum;
-import com.kusitms.backend.repository.UserRepository;
-import com.kusitms.backend.util.RedisClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -38,9 +28,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TokenProvider {
 
-  private final CustomUserDetailService customUserDetailsService;
-  private final UserRepository userRepository;
-  private final RedisClient redisClient;
   private static final String AUTHORITIES_KEY = "auth";
   private static final String BEARER_TYPE = "bearer";
 
@@ -57,47 +44,47 @@ public class TokenProvider {
     secret = Base64.getEncoder().encodeToString(secret.getBytes());
   }
 
-  public String createAccessToken(String email) {
-    return generateTokenDto(email, accessTokenExpireTime);
-  }
+  public String generateTokenDto(Authentication authentication) {
+    String authorities = authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .collect(Collectors.joining(","));
 
-  public String createRefreshToken(User user) {
-    String refreshToken = generateTokenDto(user.getEmail(), refreshTokenExpireTime);
-    //user.updateRefreshToken(refreshToken);
-    return refreshToken;
-  }
+    long now = (new Date()).getTime();
 
-  public String generateTokenDto(String email, Long validTime) {
-    Claims claims = Jwts.claims().setSubject(email);
-
-    Date now = new Date();
-    return Jwts.builder()
-        .setClaims(claims)
-        .setIssuedAt(now)
-        .setExpiration(new Date(now.getTime() + validTime))
-        .signWith(SignatureAlgorithm.HS256, secret)
+    Date accessTokenExpiresIn = new Date(now + accessTokenExpireTime);
+    String accessToken = Jwts.builder()
+        .setSubject(authentication.getName())
+        .claim(AUTHORITIES_KEY, authorities)
+        .setExpiration(accessTokenExpiresIn)
+        .signWith(SignatureAlgorithm.HS512, secret)
         .compact();
+
+
+    return accessToken;
   }
 
-  public Authentication getAuthentication(String token) {
 
-    UserDetails principle = customUserDetailsService.loadUserByUsername(getUserEmail(token));
+  public Authentication getAuthentication(String accessToken) {
+    Claims claims = parseClaims(accessToken);
 
-    return new UsernamePasswordAuthenticationToken(principle, "", principle.getAuthorities());
-  }
+    if (claims.get(AUTHORITIES_KEY) == null) {
+      throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+    }
 
-  private String getUserEmail(String token) {
-    return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-  }
+    Collection<? extends GrantedAuthority> authorities =
+        Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
 
-  public String resolveToken(HttpServletRequest request) {
-    return request.getHeader("X-AUTH-TOKEN");
+    UserDetails principal = new User(claims.getSubject(), "", authorities);
+
+    return new UsernamePasswordAuthenticationToken(principal, "", authorities);
   }
 
   public boolean validateToken(String token) {
     try {
-      Jws<Claims> claim = Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
-      return !claim.getBody().getExpiration().before(new Date());
+      Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
+      return true;
     } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
       log.info("잘못된 JWT 서명입니다.");
     } catch (ExpiredJwtException e) {
@@ -109,5 +96,17 @@ public class TokenProvider {
     }
     return false;
   }
+
+  private Claims parseClaims(String accessToken) {
+    try {
+      return Jwts.parserBuilder()
+          .setSigningKey(secret).build()
+          .parseClaimsJws(accessToken)
+          .getBody();
+    } catch (ExpiredJwtException e) {
+      return e.getClaims();
+    }
+  }
+
 
 }

@@ -308,7 +308,9 @@
       <property name="tokens" value="VARIABLE_DEF"/>
       <property name="allowSamelineMultipleAnnotations" value="true"/>
     </module>
-    <module name="NonEmptyAtclauseDescription"/>
+    <module name="NonEmptyAtclauseDescription">
+      <property name="javadocTokens" value="PARAM_LITERAL,RETURN_LITERAL"/>
+    </module>
     <module name="InvalidJavadocPosition"/>
     <module name="JavadocTagContinuationIndentation"/>
     <module name="SummaryJavadoc">

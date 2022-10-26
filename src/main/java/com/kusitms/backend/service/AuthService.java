@@ -1,12 +1,10 @@
 package com.kusitms.backend.service;
 
-import com.kusitms.backend.config.CustomUserDetailService;
 import com.kusitms.backend.config.TokenProvider;
 import com.kusitms.backend.domain.Authority;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.SignInRequest;
-import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.UserRepository;
@@ -14,6 +12,9 @@ import com.kusitms.backend.util.RedisClient;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,21 +23,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService implements IAuthService {
 
-  private final CustomUserDetailService customUserDetailService;
+  private final AuthenticationManagerBuilder managerBuilder;
   private final TokenProvider tokenProvider;
   private final PasswordEncoder passwordEncoder;
   private final RedisClient redisClient;
 
   private final UserRepository userRepository;
 
-  public TokenDto signIn(SignInRequest request) {
+  public String signIn(SignInRequest request) {
 
-    User user = (User) customUserDetailService.loadUserByUsername(request.getEmail());
-    checkPassword(request.getPassword(), user.getPassword());
+    UsernamePasswordAuthenticationToken authenticationToken
+        = new UsernamePasswordAuthenticationToken(
+            request.getEmail(), request.getPassword()
+    );
 
-    String accessToken = tokenProvider.createAccessToken(user.getEmail());
-    String refreshToken = tokenProvider.createRefreshToken(user);
-    return TokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+    Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+    return tokenProvider.generateTokenDto(authentication);
   }
 
   private void checkPassword(String request, String origin) {
