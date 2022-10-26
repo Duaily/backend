@@ -37,7 +37,10 @@ public class JwtFilter extends OncePerRequestFilter {
   }
 
   /**
-   * @param request
+   * This method is 헤더에서 토큰 추출 후, @return 토큰.
+   *
+   * @param request 헤더에서 데이터 추출
+   *
    * @return 토큰 반환
    */
   private String resolveToken(HttpServletRequest request) throws IOException {
