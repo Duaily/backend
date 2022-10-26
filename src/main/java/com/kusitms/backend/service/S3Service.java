@@ -2,6 +2,7 @@ package com.kusitms.backend.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.kusitms.backend.exception.ApiException;
@@ -39,6 +40,16 @@ public class S3Service implements IS3Service {
       throw new ApiException(ApiExceptionEnum.BAD_REQUEST_EXCEPTION);
     }
     return amazonS3Client.getUrl(bucket, fileName).toString();
+  }
+
+  @Override
+  public void delete(String fileName) {
+    String imageUrl = fileName.split("/")[3];
+
+    if (!amazonS3Client.doesObjectExist(bucket, imageUrl)) {
+      throw new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION);
+    }
+    amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, imageUrl));
   }
 
   private String createFileName(String fileName) {
