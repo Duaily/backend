@@ -22,12 +22,13 @@ public class HousePost extends Post {
   private Region region;
 
   public static HousePost createHousePost(House house, String title, List<String> imageUrls,
-      User user) {
+      User user, Region region) {
     HousePost housePost = new HousePost();
     housePost.setHouse(house);
     housePost.setTitle(title);
     housePost.setImageFile(house.getImageFileSet().stream().findFirst().orElse(null));
     housePost.setUser(user);
+    housePost.setRegion(region);
     return housePost;
   }
 }

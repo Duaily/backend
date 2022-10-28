@@ -20,4 +20,5 @@ public class HouseDto {
   @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
   private LocalDate createdDate; // 준공연도
   private String purpose; // 용도
+  private Long regionId; // 지역 Id
 }
