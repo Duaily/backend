@@ -1,8 +1,10 @@
 package com.kusitms.backend.controller;
 
+import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
+import com.kusitms.backend.dto.TokenRequestDto;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.AuthService;
 import com.kusitms.backend.service.IAuthService;
@@ -31,10 +33,15 @@ public class AuthController {
   @PostMapping("/sign-in")
   public ResponseEntity<BaseResponse> signIn(@RequestBody @Validated SignInRequest request,
       HttpServletResponse response) {
-    String accessToken = authService.signIn(request);
-    response.addHeader("Authorization", "Bearer " + accessToken);
+    TokenDto tokenDto = authService.signIn(request);
 
-    return ResponseEntity.ok(BaseResponse.builder().message("로그인에 성공하셨습니다.").build());
+    return ResponseEntity.ok(BaseResponse.builder()
+        .data(tokenDto).message("로그인에 성공하셨습니다.").build());
+  }
+
+  @PostMapping("/reissue")
+  public ResponseEntity<BaseResponse> reissue(@RequestBody TokenRequestDto request) {
+    return ResponseEntity.ok(BaseResponse.builder().data(authService.reissue(request)).build());
   }
 
   //회원가입
