@@ -1,6 +1,8 @@
 package com.kusitms.backend.config;
 
 import com.kusitms.backend.dto.TokenDto;
+import com.kusitms.backend.exception.ApiException;
+import com.kusitms.backend.exception.ApiExceptionEnum;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -82,7 +84,7 @@ public class TokenProvider {
     Claims claims = parseClaims(accessToken); // 토큰 복호화
 
     if (claims.get(AUTHORITIES_KEY) == null) {
-      throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+      throw new ApiException(ApiExceptionEnum.TOKEN_INVALID_EXCEPTION);
     }
 
     Collection<? extends GrantedAuthority> authorities =

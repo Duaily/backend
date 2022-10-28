@@ -16,6 +16,16 @@ public enum ApiExceptionEnum {
   DUPLICATION_VALUE_EXCEPTION(HttpStatus.CONFLICT, "이미 존재하는 값입니다."),
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버가 응답하지 않습니다."),
 
+
+  // Custom Exception
+
+  // Auth
+  TOKEN_EXPIRE_TIME_OUT_EXCEPTION(HttpStatus.UNAUTHORIZED, "토큰 유효시간이 만료되었습니다."),
+  TOKEN_DISCREPANCY_EXCEPTION(HttpStatus.UNAUTHORIZED, "토큰이 일치하지 않습니다."),
+  TOKEN_INVALID_EXCEPTION(HttpStatus.FORBIDDEN, "권한 정보가 없는 토큰입니다."),
+  PASSWORD_DISCREPANCY_EXCEPTION(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+
+
   ;
 
   private final HttpStatus httpStatus;

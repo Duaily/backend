@@ -53,7 +53,7 @@ public class AuthService implements IAuthService {
   private void checkPassword(String request, String origin) {
 
     if (!passwordEncoder.matches(request, origin)) {
-      throw new ApiException(ApiExceptionEnum.BAD_REQUEST_EXCEPTION);
+      throw new ApiException(ApiExceptionEnum.PASSWORD_DISCREPANCY_EXCEPTION);
     }
   }
 
@@ -76,17 +76,17 @@ public class AuthService implements IAuthService {
   public TokenDto reissue(TokenRequestDto request) {
 
     if (!tokenProvider.validateToken(request.getRefreshToken())) {
-      throw new ApiException(ApiExceptionEnum.UNAUTHORIZED_EXCEPTION);
+      throw new ApiException(ApiExceptionEnum.TOKEN_DISCREPANCY_EXCEPTION);
     }
 
     Authentication authentication = tokenProvider.getAuthentication(request.getAccessToken());
 
     String refreshToken = Optional.ofNullable(
             redisClient.getValue(authentication.getName()))
-        .orElseThrow(() -> new ApiException(ApiExceptionEnum.UNAUTHORIZED_EXCEPTION));
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.TOKEN_EXPIRE_TIME_OUT_EXCEPTION));
 
     if (!refreshToken.equals(request.getRefreshToken())) {
-      throw new ApiException(ApiExceptionEnum.UNAUTHORIZED_EXCEPTION);
+      throw new ApiException(ApiExceptionEnum.TOKEN_DISCREPANCY_EXCEPTION);
     }
 
     TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
