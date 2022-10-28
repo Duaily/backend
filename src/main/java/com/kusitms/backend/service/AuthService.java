@@ -10,6 +10,7 @@ import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.UserRepository;
 import com.kusitms.backend.util.RedisClient;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +31,7 @@ public class AuthService implements IAuthService {
 
   private final UserRepository userRepository;
 
+  @Transactional
   public String signIn(SignInRequest request) {
 
     UsernamePasswordAuthenticationToken authenticationToken
@@ -49,6 +51,7 @@ public class AuthService implements IAuthService {
   }
 
   //회원가입
+  @Transactional
   public void signUp(AuthDto.Request request) {
 
     User user = User.builder()
@@ -63,15 +66,17 @@ public class AuthService implements IAuthService {
   }
 
   //닉네임 중복 체크
+  @Transactional
   public boolean checkNicknameDuplication(String nickname) {
     return userRepository.existsByNickname(nickname);
   }
 
   //회원 탈퇴
+  @Transactional
   public void withdrawal(Long userId) {
     Optional<User> user = userRepository.findById(userId);
 
-    userRepository.delete(user.get());
+    userRepository.delete(user.get()); // 삭제 아니고 빈 값으로 대체하기
 
     //없을 경우는?
 
