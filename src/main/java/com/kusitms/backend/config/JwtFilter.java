@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter { // 요청을 받을 때 단 한번 만 실행
 
   public static final String AUTHORIZATION_HEADER = "Authorization";
   public static final String BEARER_PREFIX = "Bearer ";
@@ -26,9 +26,9 @@ public class JwtFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request,
       HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
-    String jwt = resolveToken(request);
+    String jwt = resolveToken(request); // request header 에서 토큰을 꺼냄
 
-    if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+    if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) { // 토큰 검증
       Authentication authentication = tokenProvider.getAuthentication(jwt);
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }
