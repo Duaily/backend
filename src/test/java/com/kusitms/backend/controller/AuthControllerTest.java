@@ -2,6 +2,7 @@ package com.kusitms.backend.controller;
 
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentRequest;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
+import static org.hamcrest.Matchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -14,6 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kusitms.backend.config.JwtAccessDeniedHandler;
+import com.kusitms.backend.config.JwtAuthenticationEntryPoint;
+import com.kusitms.backend.config.JwtSecurityConfig;
 import com.kusitms.backend.config.TokenProvider;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
@@ -57,6 +61,12 @@ class AuthControllerTest {
   RedisClient redisClient;
   @Autowired
   ObjectMapper objectMapper;
+  @MockBean
+  JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  @MockBean
+  JwtAccessDeniedHandler jwtAccessDeniedHandler;
+  @MockBean
+  JwtSecurityConfig jwtSecurityConfig;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -78,7 +88,14 @@ class AuthControllerTest {
         .password("test12345")
         .build();
 
-    given(authService.signIn(dto)).willReturn(anyString());
+    TokenDto tokenDto = TokenDto.builder()
+        .grantType("bearer")
+        .accessToken("access-token")
+        .refreshToken("refresh-token")
+        .accessTokenExpireTime(30L)
+        .build();
+
+    given(authService.signIn(dto)).willReturn(tokenDto);
 
     String data = objectMapper.writeValueAsString(dto);
 
@@ -102,7 +119,10 @@ class AuthControllerTest {
                 responseFields(
                     fieldWithPath("status").description("결과 코드"),
                     fieldWithPath("message").description("응답 메세지"),
-                    fieldWithPath("data").description("응답 데이터")
+                    fieldWithPath("data.grantType").description("승인 유형"),
+                    fieldWithPath("data.accessToken").description("AccessToken"),
+                    fieldWithPath("data.refreshToken").description("RefreshToken"),
+                    fieldWithPath("data.accessTokenExpireTime").description("AccessToken 만료시간")
                 )));
   }
 }
