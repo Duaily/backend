@@ -5,6 +5,8 @@ import com.kusitms.backend.domain.Authority;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.SignInRequest;
+import com.kusitms.backend.dto.TokenDto;
+import com.kusitms.backend.dto.TokenRequestDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.UserRepository;
@@ -32,21 +34,26 @@ public class AuthService implements IAuthService {
   private final UserRepository userRepository;
 
   @Transactional
-  public String signIn(SignInRequest request) {
+  public TokenDto signIn(SignInRequest request) {
 
     UsernamePasswordAuthenticationToken authenticationToken
         = new UsernamePasswordAuthenticationToken(
-            request.getEmail(), request.getPassword()
-    );
+        request.getEmail(), request.getPassword()); // id/pw 기반으로 authenticationToken 생성
 
     Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-    return tokenProvider.generateTokenDto(authentication);
+
+    TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+
+    redisClient.setValue(authentication.getName(), tokenDto.getRefreshToken(),
+        tokenProvider.getRefreshTokenExpireTime());
+
+    return tokenDto;
   }
 
   private void checkPassword(String request, String origin) {
 
     if (!passwordEncoder.matches(request, origin)) {
-      throw new ApiException(ApiExceptionEnum.BAD_REQUEST_EXCEPTION);
+      throw new ApiException(ApiExceptionEnum.PASSWORD_DISCREPANCY_EXCEPTION);
     }
   }
 
@@ -63,6 +70,31 @@ public class AuthService implements IAuthService {
         .build();
 
     userRepository.save(user);
+  }
+
+  @Transactional
+  public TokenDto reissue(TokenRequestDto request) {
+
+    if (!tokenProvider.validateToken(request.getRefreshToken())) {
+      throw new ApiException(ApiExceptionEnum.TOKEN_DISCREPANCY_EXCEPTION);
+    }
+
+    Authentication authentication = tokenProvider.getAuthentication(request.getAccessToken());
+
+    String refreshToken = Optional.ofNullable(
+            redisClient.getValue(authentication.getName()))
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.TOKEN_EXPIRE_TIME_OUT_EXCEPTION));
+
+    if (!refreshToken.equals(request.getRefreshToken())) {
+      throw new ApiException(ApiExceptionEnum.TOKEN_DISCREPANCY_EXCEPTION);
+    }
+
+    TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+
+    redisClient.setValue(authentication.getName(), tokenDto.getRefreshToken(),
+        tokenProvider.getRefreshTokenExpireTime());
+
+    return tokenDto;
   }
 
   //닉네임 중복 체크

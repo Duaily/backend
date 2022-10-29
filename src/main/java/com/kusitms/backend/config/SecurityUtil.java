@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @NoArgsConstructor
 public class SecurityUtil {
 
-  public static String getCurrentUserId() {
+  public static String getCurrentUserId() { // request 가 들어올 때 JwtFilter의 doFilter에서 저장
     final Authentication authentication =
         SecurityContextHolder.getContext().getAuthentication();
 
