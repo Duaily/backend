@@ -1,5 +1,6 @@
 package com.kusitms.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kusitms.backend.dto.AuthDto.Request;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
@@ -16,4 +17,6 @@ public interface IAuthService {
   void signUp(Request request);
 
   TokenDto reissue(TokenRequestDto request);
+
+  TokenDto kakaoSignIn(String code) throws JsonProcessingException;
 }
