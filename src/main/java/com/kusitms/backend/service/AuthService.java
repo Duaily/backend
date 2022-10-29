@@ -7,6 +7,7 @@ import com.kusitms.backend.config.TokenProvider;
 import com.kusitms.backend.domain.Authority;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.AuthDto;
+import com.kusitms.backend.dto.AuthDto.Request;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.dto.TokenRequestDto;
@@ -110,16 +111,16 @@ public class AuthService implements IAuthService {
     return tokenDto;
   }
 
-  @Override
+  @Transactional
   public TokenDto kakaoSignIn(String code) throws JsonProcessingException {
     // (1) 인가코드로 AccessToken 요청
     String accessToken = getAccessToken(code);
 
     // (2) 토큰으로 카카오 API 호출 - 유저 정보 조회
-    String email = getKakaoUserInfo(accessToken);
+    AuthDto.Request authDto = getKakaoUserInfo(accessToken);
 
     // (3) 카카오 계정으로 회원가입 처리
-    User user = signUpKakao(email);
+    User user = signUpKakao(authDto);
 
     // (4) 로그인 처리
     UsernamePasswordAuthenticationToken authenticationToken
@@ -128,24 +129,23 @@ public class AuthService implements IAuthService {
     Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
 
     // (5) 토큰 DTO 생성
-    TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-
-    return tokenDto;
+    return tokenProvider.generateTokenDto(authentication);
   }
 
-  private User signUpKakao(String email) {
+  private User signUpKakao(AuthDto.Request authDto) {
 
-    if (userRepository.existsByEmail(email)) {
+    if (userRepository.existsByEmail(authDto.getEmail())) {
       throw new ApiException(ApiExceptionEnum.AUTH_DUPLICATED_EXCEPTION);
     }
 
     return userRepository.save(User.builder()
-        .email(email)
+        .email(authDto.getEmail())
+        .nickname(authDto.getNickname())
         .authority(Authority.ROLE_USER)
         .build());
   }
 
-  private String getKakaoUserInfo(String accessToken) throws JsonProcessingException {
+  private AuthDto.Request getKakaoUserInfo(String accessToken) throws JsonProcessingException {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Authorization", "Bearer " + accessToken);
@@ -167,8 +167,13 @@ public class AuthService implements IAuthService {
 
     Long id = jsonNode.get("id").asLong();
     String email = jsonNode.get("kakao_account").get("email").asText();
+    String nickname = jsonNode.get("properties").get("nickname").asText();
 
-    return email;
+    AuthDto.Request authDto = new Request();
+    authDto.setNickname(nickname);
+    authDto.setEmail(email);
+
+    return authDto;
   }
 
   private String getAccessToken(String code) throws JsonProcessingException {

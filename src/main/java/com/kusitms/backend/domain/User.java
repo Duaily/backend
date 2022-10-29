@@ -30,12 +30,13 @@ public class User extends MetaEntity {
   private Long id;
   @Column(nullable = false, unique = true)
   private String nickname;
-  @Column(nullable = false)
+
   private String password;
-  @Column(nullable = false)
+
   private String contact;
   @Column(nullable = false)
   private String email;
+
   private int status; // 탈퇴여부 default 0 || exit 1
 
   @Enumerated(EnumType.STRING)
