@@ -47,11 +47,8 @@ public class AuthController {
   //회원가입
   @PostMapping("/sign-up")
   public ResponseEntity<BaseResponse> signUp(@Valid @RequestBody AuthDto.Request request) {
-
-    authService.signUp(request);
-
     return ResponseEntity.ok(BaseResponse.builder()
-        .message("회원가입에 성공하셨습니다.").build());
+        .message("회원가입에 성공하셨습니다.").data(authService.signUp(request)).build());
   }
 
   //닉네임 중복 확인

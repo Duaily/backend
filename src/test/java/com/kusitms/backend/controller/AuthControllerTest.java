@@ -19,6 +19,7 @@ import com.kusitms.backend.config.JwtAccessDeniedHandler;
 import com.kusitms.backend.config.JwtAuthenticationEntryPoint;
 import com.kusitms.backend.config.JwtSecurityConfig;
 import com.kusitms.backend.config.TokenProvider;
+import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.repository.UserRepository;
@@ -125,4 +126,51 @@ class AuthControllerTest {
                     fieldWithPath("data.accessTokenExpireTime").description("AccessToken 만료시간")
                 )));
   }
+
+  @Test
+  @DisplayName("회원가입")
+  void signUp() throws Exception{
+    AuthDto.Request request = AuthDto.Request.builder()
+        .email("test@naver.com")
+        .password("test12345")
+        .nickname("test")
+        .contact("010-0000-0000")
+        .build();
+
+    AuthDto.Response response = AuthDto.Response.builder()
+        .nickname("test")
+        .build();
+
+    given(authService.signUp(request)).willReturn(response.getNickname());
+
+    String data = objectMapper.writeValueAsString(request);
+    System.out.println(data);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .post("/api/auth/sign-up")
+            .characterEncoding("utf-8")
+            .content(data)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("sign-up", getDocumentRequest(), getDocumentResponse(),
+                requestFields(
+                    fieldWithPath("email").description("이메일"),
+                    fieldWithPath("password").description("비밀번호"),
+                    fieldWithPath("nickname").description("닉네임"),
+                    fieldWithPath("contact").description("전화번호")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("닉네임")
+                )));
+  }
+
+
 }

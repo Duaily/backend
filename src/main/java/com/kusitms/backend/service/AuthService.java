@@ -59,7 +59,7 @@ public class AuthService implements IAuthService {
 
   //회원가입
   @Transactional
-  public void signUp(AuthDto.Request request) {
+  public String signUp(AuthDto.Request request) {
 
     User user = User.builder()
         .nickname(request.getNickname())
@@ -70,6 +70,8 @@ public class AuthService implements IAuthService {
         .build();
 
     userRepository.save(user);
+
+    return user.getNickname();
   }
 
   @Transactional
