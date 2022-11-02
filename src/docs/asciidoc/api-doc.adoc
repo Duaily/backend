@@ -20,4 +20,16 @@ include::{snippets}/sign-in/http-response.adoc[]
 ===== Response Fields
 include::{snippets}/sign-in/response-fields.adoc[]
 
+
+=== 2-2. 로컬 회원가입
+===== Request
+include::{snippets}/sign-up/http-request.adoc[]
+===== Request Example
+include::{snippets}/sign-up/request-body.adoc[]
+
+===== Response Example
+include::{snippets}/sign-up/http-response.adoc[]
+===== Response Fields
+include::{snippets}/sign-up/response-fields.adoc[]
+
 == 3. House

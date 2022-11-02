@@ -1,5 +1,3 @@
-server:
-  port: 8080
 spring:
   ## RDB 설정
   datasource:
