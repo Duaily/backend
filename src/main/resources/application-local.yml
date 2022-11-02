@@ -1,0 +1,71 @@
+server:
+  port: 8080
+spring:
+  ## RDB 설정
+  datasource:
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  ## Multi-part 설정
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  ## JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+  ## jwt 설정
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token: 3600000
+    refresh-token: 604800000
+  ## Redis 설정
+  redis:
+    host: ${REDIS_URL}
+    port: 6378
+  ## kakao 로그인 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: ${REDIRECT_URL}
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+## AWS 설정
+cloud:
+  aws:
+    s3:
+      bucket: ${AWS_BUCKET_NAME}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR

@@ -256,7 +256,7 @@
     </module>
     <module name="AbbreviationAsWordInName">
       <property name="ignoreFinal" value="false"/>
-      <property name="allowedAbbreviationLength" value="0"/>
+      <property name="allowedAbbreviationLength" value="1"/>
       <property name="tokens"
         value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, ANNOTATION_FIELD_DEF,
                     PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF, PATTERN_VARIABLE_DEF, RECORD_DEF,
@@ -308,7 +308,9 @@
       <property name="tokens" value="VARIABLE_DEF"/>
       <property name="allowSamelineMultipleAnnotations" value="true"/>
     </module>
-    <module name="NonEmptyAtclauseDescription"/>
+    <module name="NonEmptyAtclauseDescription">
+      <property name="javadocTokens" value="PARAM_LITERAL,RETURN_LITERAL"/>
+    </module>
     <module name="InvalidJavadocPosition"/>
     <module name="JavadocTagContinuationIndentation"/>
     <module name="SummaryJavadoc">
