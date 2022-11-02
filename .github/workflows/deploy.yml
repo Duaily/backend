@@ -1,0 +1,65 @@
+name: Deploy Spring boot to Amazon EC2
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  PROJCET_NAME: action_codedeploy
+  S3_BUCKET_NAME: duaily-test-bucket
+  AWS_REGION: ap-northeast-2
+  
+jobs:
+  deploy:
+    name: DEPLOY
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          
+      - name: Make application-secret.yml
+        run: 
+          # create application-secret.yml
+          cd ./src/main/resources
+          
+          # application-secret.yml
+          touch ./application-secret.yml
+          
+          # github-actions 에서 설정한 값을 application-secret.yml 파일에 쓰기
+          echo "${{ secrets.SECRET }}" >> ./application-secret.yml
+        shell: bash
+      
+      - name: Build with Gradle
+        run: ./gradlew bootJar
+    
+      - name: WAS docker build and push
+        run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -t ${{ secrets.DOCKER_REPO }}/sduaily_backend .
+        docker push ${{ secrets.DOCKER_REPO }}/duaily_backend
+
+    ## docker compose up
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ubuntu
+        key: ${{ secrets.KEY }}
+        script: |
+          sudo docker rm -f $(docker ps -qa)
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/duaily_backend
+          docker-compose up -d
+          docker image prune -f
+
+
