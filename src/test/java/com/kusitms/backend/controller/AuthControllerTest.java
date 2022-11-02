@@ -144,7 +144,6 @@ class AuthControllerTest {
     given(authService.signUp(request)).willReturn(response.getNickname());
 
     String data = objectMapper.writeValueAsString(request);
-    System.out.println(data);
 
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders

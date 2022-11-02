@@ -1,11 +1,9 @@
-server:
-  port: 8080
 spring:
   ## RDB 설정
   datasource:
-    url: jdbc:mysql://localhost:3305/test_db?useSSL=false&serverTimezone=Asia/Seoul
-    username: test
-    password: test_pw
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   ## Multi-part 설정
   servlet:
@@ -22,12 +20,12 @@ spring:
         format_sql: true
   ## jwt 설정
   jwt:
-    secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWw
+    secret: ${JWT_SECRET}
     access-token: 3600000
     refresh-token: 604800000
   ## Redis 설정
   redis:
-    host: localhost
+    host: ${REDIS_URL}
     port: 6378
   ## kakao 로그인 설정
   security:

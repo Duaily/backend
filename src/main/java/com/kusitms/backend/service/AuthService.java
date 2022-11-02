@@ -171,7 +171,7 @@ public class AuthService implements IAuthService {
     String email = jsonNode.get("kakao_account").get("email").asText();
     String nickname = jsonNode.get("properties").get("nickname").asText();
 
-    AuthDto.Request authDto = new Request();
+    AuthDto.Request authDto = AuthDto.Request.builder().build();
     authDto.setNickname(nickname);
     authDto.setEmail(email);
 
