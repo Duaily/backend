@@ -25,7 +25,8 @@ public enum ApiExceptionEnum {
   TOKEN_INVALID_EXCEPTION(HttpStatus.FORBIDDEN, "권한 정보가 없는 토큰입니다."),
   PASSWORD_DISCREPANCY_EXCEPTION(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
-
+  AUTH_DUPLICATED_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 가입된 사용자입니다."),
+  LOGIN_FAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "로그인에 실패하셨습니다."),
   ;
 
   private final HttpStatus httpStatus;

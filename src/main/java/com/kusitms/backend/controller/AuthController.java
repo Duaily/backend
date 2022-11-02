@@ -1,10 +1,13 @@
 package com.kusitms.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.dto.TokenRequestDto;
+import com.kusitms.backend.exception.ApiException;
+import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.AuthService;
 import com.kusitms.backend.service.IAuthService;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
@@ -71,4 +75,13 @@ public class AuthController {
         .message("회원 탈퇴에 성공하셨습니다.").build());
   }
 
+  @GetMapping("/kakao")
+  public ResponseEntity<BaseResponse> kakao(@RequestParam String code)
+      throws JsonProcessingException {
+
+    TokenDto tokenDto = authService.kakaoSignIn(code);
+
+    return ResponseEntity.ok(BaseResponse.builder()
+        .data(tokenDto).message("카카오 간편 로그인에 성공하셨습니다.").build());
+  }
 }
