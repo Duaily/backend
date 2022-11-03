@@ -5,12 +5,15 @@ import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
 import static org.hamcrest.Matchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,13 +21,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kusitms.backend.config.JwtAccessDeniedHandler;
 import com.kusitms.backend.config.JwtAuthenticationEntryPoint;
 import com.kusitms.backend.config.JwtSecurityConfig;
+import com.kusitms.backend.config.SecurityUtil;
 import com.kusitms.backend.config.TokenProvider;
 import com.kusitms.backend.dto.AuthDto;
+import com.kusitms.backend.dto.CheckSmsRequest;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.repository.UserRepository;
 import com.kusitms.backend.service.IAuthService;
+import com.kusitms.backend.service.IUserService;
+import com.kusitms.backend.service.UserService;
 import com.kusitms.backend.util.RedisClient;
+import com.kusitms.backend.util.SmsClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +45,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -68,6 +79,14 @@ class AuthControllerTest {
   JwtAccessDeniedHandler jwtAccessDeniedHandler;
   @MockBean
   JwtSecurityConfig jwtSecurityConfig;
+  @MockBean
+  SmsClient smsClient;
+  @MockBean
+  IUserService userService;
+  @MockBean
+  private Authentication authentication;
+  @MockBean
+  private SecurityContext securityContext;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -171,5 +190,80 @@ class AuthControllerTest {
                 )));
   }
 
+  @Test
+  @DisplayName("전화번호 인증 코드 전송")
+  void sendSmsCode() throws Exception {
+    // request param
+    String contact = "01012345678";
 
+    userService.sendSmsCode(contact);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .post("/api/auth/send-sms?contact={contact}", contact)
+            .characterEncoding("utf-8")
+            .accept(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("send-sms", getDocumentRequest(), getDocumentResponse(),
+                requestParameters(
+                    parameterWithName("contact").description("전화번호")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("응답 데이터 없음")
+                )
+            )
+        );
+  }
+
+  @Test
+  @DisplayName("전화번호 인증코드 검증")
+  void checkSmsCode() throws Exception {
+    // request body
+    CheckSmsRequest request = CheckSmsRequest
+        .builder()
+        .code("1234")
+        .contact("01012345678")
+        .build();
+
+    String email = "test@test.com";
+
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
+
+    userService.checkSmsCode(request, email);
+
+    String json = objectMapper.writeValueAsString(request);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .post("/api/auth/check-sms")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+            .characterEncoding("utf-8")
+            .accept(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("check-sms", getDocumentRequest(), getDocumentResponse(),
+                requestFields(
+                    fieldWithPath("code").description("인증코드"),
+                    fieldWithPath("contact").description("전화번호")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("응답 데이터 없음")
+                )
+            )
+        );
+  }
 }
