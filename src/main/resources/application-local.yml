@@ -67,3 +67,8 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+custom:
+  sms:
+    api-key: ${SMS_KEY}
+    api-secret: ${SMS_SECRET_KEY}
+    source: ${SMS_ID}
