@@ -74,3 +74,20 @@ include::{snippets}/create/request-fields.adoc[]
 include::{snippets}/create/http-response.adoc[]
 ===== Response Fields
 include::{snippets}/create/response-fields.adoc[]
+
+== 4. Region
+
+Region은 지역에 대한 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
+
+=== 4-1. 지역 게시글 작성
+===== Request
+include::{snippets}/create/http-request.adoc[]
+===== Request Example
+include::{snippets}/create/request-body.adoc[]
+===== Request Fields
+include::{snippets}/create/request-fields.adoc[]
+
+===== Response
+include::{snippets}/create/http-response.adoc[]
+===== Response Example
+include::{snippets}/create/response-fields.adoc[]
