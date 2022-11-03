@@ -4,6 +4,7 @@ import com.kusitms.backend.config.SecurityUtil;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.HouseService;
+import com.kusitms.backend.service.IHouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/house")
 public class HouseController {
 
-  private final HouseService houseService;
+  private final IHouseService houseService;
 
   @PostMapping
   public ResponseEntity<BaseResponse> create(@RequestBody HouseDto request) {
