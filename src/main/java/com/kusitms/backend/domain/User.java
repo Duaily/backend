@@ -52,4 +52,8 @@ public class User extends MetaEntity {
   @OneToMany
   @JoinColumn(name = "commenter_id")
   private Set<Comment> comments;
+
+  public void setContact(String contact) {
+    this.contact = contact;
+  }
 }
