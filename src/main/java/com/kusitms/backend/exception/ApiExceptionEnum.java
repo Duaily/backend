@@ -27,6 +27,7 @@ public enum ApiExceptionEnum {
 
   AUTH_DUPLICATED_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 가입된 사용자입니다."),
   LOGIN_FAIL_EXCEPTION(HttpStatus.BAD_REQUEST, "로그인에 실패하셨습니다."),
+  CODE_INVALID_EXCEPTION(HttpStatus.BAD_REQUEST, "전화번호 인증코드를 잘못 입력하셨습니다.")
   ;
 
   private final HttpStatus httpStatus;

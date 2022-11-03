@@ -2,7 +2,7 @@ package com.kusitms.backend.controller;
 
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentRequest;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -14,24 +14,19 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kusitms.backend.config.JwtAccessDeniedHandler;
 import com.kusitms.backend.config.JwtAuthenticationEntryPoint;
 import com.kusitms.backend.config.JwtSecurityConfig;
 import com.kusitms.backend.config.TokenProvider;
-import com.kusitms.backend.dto.HouseDto;
-import com.kusitms.backend.repository.HouseRepository;
-import com.kusitms.backend.repository.PostRepository;
+import com.kusitms.backend.dto.RegionDto;
 import com.kusitms.backend.repository.RegionRepository;
-import com.kusitms.backend.repository.UserRepository;
-import com.kusitms.backend.service.IHouseService;
-import java.time.LocalDate;
+import com.kusitms.backend.service.IRegionService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -52,22 +47,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @ActiveProfiles("test")
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(HouseController.class)
+@WebMvcTest(RegionController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class HouseControllerTest {
+class RegionControllerTest {
 
   @Autowired
   MockMvc mockMvc;
-  @MockBean
-  IHouseService houseService;
-  @MockBean
-  HouseRepository houseRepository;
-  @MockBean
-  PostRepository postRepository;
-  @MockBean
-  UserRepository userRepository;
-  @MockBean
-  RegionRepository regionRepository;
   @MockBean
   TokenProvider tokenProvider;
   @Autowired
@@ -82,9 +67,10 @@ class HouseControllerTest {
   private Authentication authentication;
   @MockBean
   private SecurityContext securityContext;
-
-  // static data
-  final String email = "test@test.com";
+  @MockBean
+  IRegionService regionService;
+  @MockBean
+  RegionRepository regionRepository;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -99,38 +85,37 @@ class HouseControllerTest {
   }
 
   @Test
-  @DisplayName("빈 집 게시글 생성")
   void create() throws Exception {
     // request body
-    HouseDto request = HouseDto.builder()
-        .title("속초 오션뷰 하우스를 소개합니다.")
-        .imageUrls(List.of(
-            "image1.address",
-            "image2.address",
-            "image3.address"))
+    RegionDto request = RegionDto
+        .builder()
+        .title("속초의 자랑을 해볼게요")
+        .content("속초는 강원도에서 유명한 관광지입니다. 바다와 산을 모두 즐길 수 있는 속초로 놀러오세요.")
+        .name("속초")
+        .reason("속초의 자연을 느낄 수 있고, 관광지와 다양한 먹거리가 있는 곳")
+        .origin("속초의 유래는 .... ")
+        .info("속초에는 설악산이 있습니다. 설악산의 케이블카는 .... ")
         .city("강원도")
         .street("속초시")
         .zipcode("12345")
-        .price("150000000")
-        .createdDate(LocalDate.parse("2015-12-09"))
-        .purpose("게스트 하우스")
-        .regionId(1L)
+        .imageUrls(List.of(
+            "image1.address",
+            "image2.address",
+            "image3.address",
+            "image4.address",
+            "image5.address"
+        ))
         .build();
 
     Long response = 1l;
 
-    // get user data from security context
-    when(securityContext.getAuthentication()).thenReturn(authentication);
-    SecurityContextHolder.setContext(securityContext);
-    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
-
-    given(houseService.create(email, request)).willReturn(response);
+    given(regionService.create(request)).willReturn(response);
 
     String json = objectMapper.writeValueAsString(request);
 
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
-            .post("/api/house")
+            .post("/api/region")
             .contentType(MediaType.APPLICATION_JSON)
             .content(json)
             .characterEncoding("utf-8")
@@ -142,21 +127,21 @@ class HouseControllerTest {
         .andDo(
             document("create", getDocumentRequest(), getDocumentResponse(),
                 requestFields(
-                    fieldWithPath("title").description("빈 집 게시글 제목"),
-                    fieldWithPath("imageUrls").description("빈 집 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
+                    fieldWithPath("title").description("지역 게시글 제목"),
+                    fieldWithPath("content").description("지역 게시글 내용"),
+                    fieldWithPath("name").description("지역명"),
+                    fieldWithPath("reason").description("지역 간단 추천 이유 ( 1000자 이내 )"),
+                    fieldWithPath("origin").description("지역 유래"),
+                    fieldWithPath("info").description("지역 정보"),
+                    fieldWithPath("imageUrls").description("지역 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
                     fieldWithPath("city").description("도/시"),
                     fieldWithPath("street").description("도로명주소"),
-                    fieldWithPath("zipcode").description("우편번호"),
-                    fieldWithPath("price").description("빈 집 가격( 정확한 금액 )"),
-                    fieldWithPath("size").description("빈 집 크기"),
-                    fieldWithPath("createdDate").description("준공연도 (yyyy-MM-dd)"),
-                    fieldWithPath("purpose").description("빈 집 용도"),
-                    fieldWithPath("regionId").description("지역 ID")
+                    fieldWithPath("zipcode").description("우편번호")
                 ),
                 responseFields(
                     fieldWithPath("status").description("결과 코드"),
                     fieldWithPath("message").description("응답 메세지"),
-                    fieldWithPath("data").description("빈 집 게시글 ID")
+                    fieldWithPath("data").description("지역 게시글 ID")
                 )
             )
         );

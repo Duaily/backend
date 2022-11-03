@@ -1,14 +1,19 @@
-= Dualiy REST API DOCS
+= 👩🏻‍🌾 Dualiy REST API DOCS
 :toc: left
 :toclevels: 2
 :source-highlighter: highlightjs
 
-== 1. 개요
+== 1. 🎥 개요
 
-본 문서는 Dualiy REST API 문서입니다.
+본 문서는 Duaily REST API 문서입니다.
 각 문서는 도메인을 기준으로 분리하였습니다.
 
-== 2. Auth
+문서에 대한 저작권은 ``구해줘 홈즈 ``팀에게 있으며, 무단으로 복제를 금지합니다.
+
+== 2. 👦🏻 Auth
+
+Auth는 로그인, 회원가입, 토큰 재발급, 전화번호 인증 등의 API를 담당합니다.
+
 === 2-1. 로컬 로그인
 ===== Request
 include::{snippets}/sign-in/http-request.adoc[]
@@ -32,4 +37,81 @@ include::{snippets}/sign-up/http-response.adoc[]
 ===== Response Fields
 include::{snippets}/sign-up/response-fields.adoc[]
 
-== 3. House
+=== 2-3. 전화번호 인증 코드 전송
+===== Request
+include::{snippets}/send-sms/http-request.adoc[]
+===== Request Params
+include::{snippets}/send-sms/request-parameters.adoc[]
+
+===== Response Example
+include::{snippets}/send-sms/http-response.adoc[]
+===== Response Fields
+include::{snippets}/send-sms/response-fields.adoc[]
+
+=== 2-4. 전화번호 인증 코드 검증
+===== Request
+include::{snippets}/check-sms/http-request.adoc[]
+===== Request Example
+include::{snippets}/check-sms/request-body.adoc[]
+
+===== Response Example
+include::{snippets}/check-sms/http-response.adoc[]
+===== Response Fields
+include::{snippets}/check-sms/response-fields.adoc[]
+
+== 3. 🏡 House
+
+House는 빈 집에 대한 빈 집 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
+
+=== 3-1. 빈 집 게시글 작성
+===== Request
+include::{snippets}/create/http-request.adoc[]
+===== Request Example
+include::{snippets}/create/request-body.adoc[]
+===== Request Fields
+include::{snippets}/create/request-fields.adoc[]
+===== Response
+include::{snippets}/create/http-response.adoc[]
+===== Response Fields
+include::{snippets}/create/response-fields.adoc[]
+
+== 4. 🏕 Region
+
+Region은 지역에 대한 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
+
+=== 4-1. 지역 게시글 작성
+===== Request
+include::{snippets}/create/http-request.adoc[]
+===== Request Example
+include::{snippets}/create/request-body.adoc[]
+===== Request Fields
+include::{snippets}/create/request-fields.adoc[]
+
+===== Response
+include::{snippets}/create/http-response.adoc[]
+===== Response Example
+include::{snippets}/create/response-fields.adoc[]
+
+== 5. 🪣 AWS S3
+
+s3는 이미지에 관한 업로드와 삭제를 담당합니다.
+
+=== 5-1. 이미지 업로드
+===== Request
+include::{snippets}/aws-s3-upload/http-request.adoc[]
+
+===== Response
+include::{snippets}/aws-s3-upload/http-response.adoc[]
+===== Response Example
+include::{snippets}/aws-s3-upload/response-fields.adoc[]
+
+=== 5-2. 이미지 삭제
+===== Request
+include::{snippets}/aws-s3-delete/http-request.adoc[]
+===== Request Example
+include::{snippets}/aws-s3-delete/request-parameters.adoc[]
+
+===== Response
+include::{snippets}/aws-s3-delete/http-response.adoc[]
+===== Response Example
+include::{snippets}/aws-s3-delete/response-fields.adoc[]

@@ -2,47 +2,40 @@ package com.kusitms.backend.controller;
 
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentRequest;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartBody;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kusitms.backend.config.JwtAccessDeniedHandler;
 import com.kusitms.backend.config.JwtAuthenticationEntryPoint;
 import com.kusitms.backend.config.JwtSecurityConfig;
 import com.kusitms.backend.config.TokenProvider;
-import com.kusitms.backend.dto.HouseDto;
-import com.kusitms.backend.repository.HouseRepository;
-import com.kusitms.backend.repository.PostRepository;
-import com.kusitms.backend.repository.RegionRepository;
-import com.kusitms.backend.repository.UserRepository;
-import com.kusitms.backend.service.IHouseService;
-import java.time.LocalDate;
-import java.util.List;
+import com.kusitms.backend.service.IS3Service;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -52,22 +45,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @ActiveProfiles("test")
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(HouseController.class)
+@WebMvcTest(S3Controller.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class HouseControllerTest {
+class S3ControllerTest {
 
   @Autowired
   MockMvc mockMvc;
-  @MockBean
-  IHouseService houseService;
-  @MockBean
-  HouseRepository houseRepository;
-  @MockBean
-  PostRepository postRepository;
-  @MockBean
-  UserRepository userRepository;
-  @MockBean
-  RegionRepository regionRepository;
   @MockBean
   TokenProvider tokenProvider;
   @Autowired
@@ -79,12 +62,13 @@ class HouseControllerTest {
   @MockBean
   JwtSecurityConfig jwtSecurityConfig;
   @MockBean
+  IS3Service s3Service;
+  @MockBean
+  AmazonS3Client amazonS3Client;
+  @MockBean
   private Authentication authentication;
   @MockBean
   private SecurityContext securityContext;
-
-  // static data
-  final String email = "test@test.com";
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -99,40 +83,49 @@ class HouseControllerTest {
   }
 
   @Test
-  @DisplayName("빈 집 게시글 생성")
-  void create() throws Exception {
-    // request body
-    HouseDto request = HouseDto.builder()
-        .title("속초 오션뷰 하우스를 소개합니다.")
-        .imageUrls(List.of(
-            "image1.address",
-            "image2.address",
-            "image3.address"))
-        .city("강원도")
-        .street("속초시")
-        .zipcode("12345")
-        .price("150000000")
-        .createdDate(LocalDate.parse("2015-12-09"))
-        .purpose("게스트 하우스")
-        .regionId(1L)
-        .build();
+  void upload() throws Exception {
+    MockMultipartFile multipartFile = new MockMultipartFile(
+        "multipartFile",
+        "multipartFile.jpeg",
+        MediaType.IMAGE_JPEG_VALUE,
+        "multipartFile".getBytes()
+    );
 
-    Long response = 1l;
+    String imageUrl = "aws-s3-bucket/test_db?imageUrl";
 
-    // get user data from security context
-    when(securityContext.getAuthentication()).thenReturn(authentication);
-    SecurityContextHolder.setContext(securityContext);
-    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
+    given(s3Service.upload(multipartFile)).willReturn(imageUrl);
 
-    given(houseService.create(email, request)).willReturn(response);
+    ResultActions result = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .multipart("/api/s3")
+            .file("file", multipartFile.getBytes())
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .accept(MediaType.APPLICATION_JSON)
+    );
 
-    String json = objectMapper.writeValueAsString(request);
+    result.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("aws-s3-upload", getDocumentRequest(), getDocumentResponse(),
+                requestPartBody("file"),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("업로드 이미지 주소")
+                ))
+        );
+  }
+
+  @Test
+  void delete() throws Exception {
+
+    String fileName = anyString();
+
+    s3Service.delete(fileName);
 
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
-            .post("/api/house")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json)
+            .delete("/api/s3?fileName={fileName}", fileName)
             .characterEncoding("utf-8")
             .accept(MediaType.APPLICATION_JSON)
     );
@@ -140,23 +133,14 @@ class HouseControllerTest {
     resultActions.andExpect(status().isOk())
         .andDo(print())
         .andDo(
-            document("create", getDocumentRequest(), getDocumentResponse(),
-                requestFields(
-                    fieldWithPath("title").description("빈 집 게시글 제목"),
-                    fieldWithPath("imageUrls").description("빈 집 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
-                    fieldWithPath("city").description("도/시"),
-                    fieldWithPath("street").description("도로명주소"),
-                    fieldWithPath("zipcode").description("우편번호"),
-                    fieldWithPath("price").description("빈 집 가격( 정확한 금액 )"),
-                    fieldWithPath("size").description("빈 집 크기"),
-                    fieldWithPath("createdDate").description("준공연도 (yyyy-MM-dd)"),
-                    fieldWithPath("purpose").description("빈 집 용도"),
-                    fieldWithPath("regionId").description("지역 ID")
+            document("aws-s3-delete", getDocumentRequest(), getDocumentResponse(),
+                requestParameters(
+                    parameterWithName("fileName").description("이미지 url")
                 ),
                 responseFields(
                     fieldWithPath("status").description("결과 코드"),
                     fieldWithPath("message").description("응답 메세지"),
-                    fieldWithPath("data").description("빈 집 게시글 ID")
+                    fieldWithPath("data").description("응답 데이터 없음")
                 )
             )
         );
