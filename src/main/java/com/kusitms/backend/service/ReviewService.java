@@ -36,6 +36,15 @@ public class ReviewService {
     return saved.getId();
 
   }
+
+
+  // 후기 게시글 상세 조회
+  @Transactional
+  public ReviewPost getReviewDetail(Long postId) {
+    return (ReviewPost) postRepository.findById(postId)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+  }
+
 }
 
 
