@@ -1,12 +1,15 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.domain.Deal;
 import com.kusitms.backend.domain.House;
 import com.kusitms.backend.domain.HousePost;
 import com.kusitms.backend.domain.Region;
 import com.kusitms.backend.domain.User;
+import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
+import com.kusitms.backend.repository.DealRepository;
 import com.kusitms.backend.repository.HouseRepository;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.RegionRepository;
@@ -24,6 +27,7 @@ public class HouseService implements IHouseService {
   private final PostRepository postRepository;
   private final UserRepository userRepository;
   private final RegionRepository regionRepository;
+  private final DealRepository dealRepository;
 
   @Transactional
   public Long create(String email, HouseDto request) {
@@ -50,6 +54,30 @@ public class HouseService implements IHouseService {
     HousePost saved = postRepository.save(housePost);
 
     // 빈 집 게시글 아이디 반환
+    return saved.getId();
+  }
+
+  @Transactional
+  public Long createDeal(DealDto.Request request, String email) {
+    // 사용자 조회
+    User buyer = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+
+    // 빈 집 게시글 조회
+    HousePost housePost = (HousePost) postRepository.findById(request.getPostId())
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.POST_NOT_FOUND_EXCEPTION));
+
+    // 사용자 권한 조회 ( 작성자인지 아닌지 )
+    if (housePost.getUser() == buyer) {
+      throw new ApiException(ApiExceptionEnum.BUYER_INVALID_EXCEPTION);
+    }
+
+    // 거래 시작
+    Deal deal = Deal.createDeal(buyer, housePost);
+
+    // 거래 저장
+    Deal saved = dealRepository.save(deal);
+
     return saved.getId();
   }
 }
