@@ -1,10 +1,12 @@
 package com.kusitms.backend.controller;
 
 import com.kusitms.backend.config.SecurityUtil;
+import com.kusitms.backend.domain.Post;
 import com.kusitms.backend.domain.ReviewPost;
 import com.kusitms.backend.dto.ReviewPostDto;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.ReviewService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ReviewController {
 
   private final ReviewService reviewService;
+
   @PostMapping
   public ResponseEntity<BaseResponse> create(@RequestBody ReviewPostDto request) {
 
@@ -31,9 +34,16 @@ public class ReviewController {
   @GetMapping("/{postId}")
   public ResponseEntity<BaseResponse> getReviewDetail(@PathVariable Long postId) {
 
-    ReviewPost reviewPost = reviewService.getReviewDetail(postId);
+    Post reviewPost = reviewService.getReviewDetail(postId);
     return ResponseEntity.ok(BaseResponse.builder()
         .message("후기 게시글 상세 조회 성공").data(reviewPost).build());
 
+  }
+
+  @GetMapping("/list")
+  public ResponseEntity<BaseResponse> getReviewList() {
+
+    return ResponseEntity.ok(BaseResponse.builder()
+        .message("후기 게시글 목록 조회 성공").data(reviewService.getReviewList()).build());
   }
 }

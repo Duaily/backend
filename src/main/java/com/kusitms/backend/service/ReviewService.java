@@ -1,5 +1,6 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.domain.Post;
 import com.kusitms.backend.domain.ReviewPost;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.ReviewPostDto;
@@ -7,6 +8,9 @@ import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,14 +41,26 @@ public class ReviewService {
 
   }
 
-
   // 후기 게시글 상세 조회
   @Transactional
-  public ReviewPost getReviewDetail(Long postId) {
-    return (ReviewPost) postRepository.findById(postId)
+  public Post getReviewDetail(Long postId) {
+    return postRepository.findById(postId)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
   }
 
+  // 후기 게시글 목록 조회
+  public List<ReviewPostDto.Response> getReviewList() {
+
+    List<Post> postList = postRepository.findAll();
+    List<ReviewPostDto.Response> reviewDtoList = new ArrayList<>();
+
+    for (Post post : postList) {
+      reviewDtoList.add(ReviewPostDto.Response.reviewResponse(post));
+    }
+
+    Collections.reverse(reviewDtoList);
+    return reviewDtoList;
+  }
 }
 
 
