@@ -16,7 +16,6 @@ public interface IAuthService {
 
   TokenDto reissue(TokenRequestDto request);
 
-
   String signUp(Request request);
 
   TokenDto kakaoSignIn(String code) throws JsonProcessingException;
