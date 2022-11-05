@@ -1,4 +1,4 @@
-= 👩🏻‍🌾 Dualiy REST API DOCS
+= 👩🏻‍🌾 Duaily REST API DOCS
 :toc: left
 :toclevels: 2
 :source-highlighter: highlightjs
@@ -115,3 +115,12 @@ include::{snippets}/aws-s3-delete/request-parameters.adoc[]
 include::{snippets}/aws-s3-delete/http-response.adoc[]
 ===== Response Example
 include::{snippets}/aws-s3-delete/response-fields.adoc[]
+
+== 6. Deal
+=== 6-1. 거래 생성
+===== Request
+include::{snippets}/create-deal/http-request.adoc[]
+===== Response
+include::{snippets}/create-deal/http-response.adoc[]
+===== Response Example
+include::{snippets}/create-deal/response-fields.adoc[]
