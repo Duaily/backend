@@ -1,5 +1,6 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.domain.HousePost;
 import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 
@@ -10,4 +11,6 @@ public interface IHouseService {
   Long createDeal(DealDto.Request request, String email);
 
   Long modifyDeal(Long dealId, String email);
+
+  HousePost getDetail(Long houseId);
 }

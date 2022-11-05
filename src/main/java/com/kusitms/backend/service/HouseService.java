@@ -112,4 +112,13 @@ public class HouseService implements IHouseService {
 
     return saved.getId();
   }
+
+  @Transactional
+  public HousePost getDetail(Long houseId) {
+
+    HousePost housePost = (HousePost) postRepository.findById(houseId)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+
+    return housePost;
+  }
 }
