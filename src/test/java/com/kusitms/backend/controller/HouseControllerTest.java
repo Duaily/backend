@@ -13,6 +13,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,6 +24,7 @@ import com.kusitms.backend.config.JwtSecurityConfig;
 import com.kusitms.backend.config.TokenProvider;
 import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
+import com.kusitms.backend.dto.HousePreviewDto;
 import com.kusitms.backend.repository.DealRepository;
 import com.kusitms.backend.repository.HouseRepository;
 import com.kusitms.backend.repository.PostRepository;
@@ -30,6 +32,7 @@ import com.kusitms.backend.repository.RegionRepository;
 import com.kusitms.backend.repository.UserRepository;
 import com.kusitms.backend.service.IHouseService;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +42,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -247,5 +251,71 @@ class HouseControllerTest {
                 )
             )
         );
+  }
+
+  @Test
+  @DisplayName("빈 집 게시글 목록 조회")
+  void getHousePostList() throws Exception {
+    // request data
+    final Integer page = 1;
+    // response data
+    final List<HousePreviewDto> response = new ArrayList<>();
+    final HousePreviewDto house1 = HousePreviewDto.builder()
+        .postId(1L)
+        .title("어서오세요. 이곳은 전경이 아름다운 속초 앞바다 빈 집 입니다.")
+        .imageUrl("image address")
+        .author("Dual ( 작성자 닉네임 )")
+        .minPrice(100000000)
+        .maxPrice(200000000)
+        .location("강원도 속초시")
+        .build();
+    final HousePreviewDto house2 = HousePreviewDto.builder()
+        .postId(2L)
+        .title("제주의 자연을 느끼며 .... ")
+        .imageUrl("image address")
+        .author("농부 ( 작성자 닉네임 )")
+        .minPrice(400000000)
+        .maxPrice(500000000)
+        .location("제주도 서귀포시")
+        .build();
+    final HousePreviewDto house3 = HousePreviewDto.builder()
+        .postId(3L)
+        .title("전주의 먹거리를 집 앞에서 ..!! ")
+        .imageUrl("image address")
+        .author("국수조아 ( 작성자 닉네임 )")
+        .minPrice(300000000)
+        .maxPrice(400000000)
+        .location("전라도 전주시")
+        .build();
+    response.add(house1);
+    response.add(house2);
+    response.add(house3);
+
+    given(houseService.getHousePostList(PageRequest.of(page - 1, 8))).willReturn(response);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .get("/api/house/list?page={page}", page)
+    );
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("house-list", getDocumentRequest(), getDocumentResponse(),
+                requestParameters(
+                    parameterWithName("page").description("페이지 번호")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data.[].postId").description("빈 집 게시글 ID"),
+                    fieldWithPath("data.[].title").description("게시글 제목"),
+                    fieldWithPath("data.[].location").description("빈 집 주소"),
+                    fieldWithPath("data.[].imageUrl").description("대표 이미지 url"),
+                    fieldWithPath("data.[].minPrice").description("최소 가격"),
+                    fieldWithPath("data.[].maxPrice").description("최대 가격"),
+                    fieldWithPath("data.[].author").description("작성자 닉네임")
+                ))
+        );
+
   }
 }
