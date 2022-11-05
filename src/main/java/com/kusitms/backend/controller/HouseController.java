@@ -4,10 +4,14 @@ import com.kusitms.backend.config.SecurityUtil;
 import com.kusitms.backend.domain.HousePost;
 import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
+import com.kusitms.backend.dto.HousePreviewDto;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.HouseService;
 import com.kusitms.backend.service.IHouseService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +28,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HouseController {
 
   private final IHouseService houseService;
+
+  @GetMapping("/list")
+  public ResponseEntity<BaseResponse> getHousePostList(
+      @RequestParam(name = "page", defaultValue = "1") Integer page
+  ) {
+    List<HousePreviewDto> response = houseService.getHousePostList(PageRequest.of(page - 1, 8));
+    return ResponseEntity.ok(BaseResponse.builder()
+        .data(response).message("빈 집 게시글 목록 조회를 성공하셨습니다.").build());
+  }
 
   @PostMapping
   public ResponseEntity<BaseResponse> create(@RequestBody HouseDto request) {

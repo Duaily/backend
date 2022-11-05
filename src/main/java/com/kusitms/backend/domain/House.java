@@ -1,5 +1,6 @@
 package com.kusitms.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kusitms.backend.dto.HouseDto;
 import java.time.LocalDate;
 import java.util.Set;
@@ -38,10 +39,12 @@ public class House extends MetaEntity {
   private LocalDate createdDate; // 준공연도
   private String purpose; // 용도
 
+  @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "house_id")
   private Set<ImageFile> imageFileSet;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "owner_id")
   private User owner;
