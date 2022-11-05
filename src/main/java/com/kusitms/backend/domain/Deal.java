@@ -31,13 +31,21 @@ public class Deal extends MetaEntity {
   private User buyer;
 
   @OneToOne
-  private Post housePost;
+  private HousePost housePost;
 
-  public static Deal createDeal(User buyer, Post housePost) {
+  public static Deal createDeal(User buyer, HousePost housePost) {
     return Deal.builder()
         .buyer(buyer)
         .housePost(housePost)
         .state(DealState.ONGOING)
         .build();
+  }
+
+  public void modifyStatus() {
+    this.state = DealState.COMPLETED;
+  }
+
+  public boolean isCompleted() {
+    return state == DealState.COMPLETED;
   }
 }

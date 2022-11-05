@@ -8,4 +8,6 @@ public interface IHouseService {
   Long create(String email, HouseDto dto);
 
   Long createDeal(DealDto.Request request, String email);
+
+  Long modifyDeal(Long dealId, String email);
 }
