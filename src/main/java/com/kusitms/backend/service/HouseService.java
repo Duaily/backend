@@ -80,4 +80,36 @@ public class HouseService implements IHouseService {
 
     return saved.getId();
   }
+
+  @Transactional
+  public Long modifyDeal(Long dealId, String email) {
+
+    // 빈 집 게시글 판매자 조회
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+
+    // 거래 조회
+    Deal deal = dealRepository.findById(dealId)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+
+    // 거래 상태 처리 확인
+    if (deal.isCompleted()) {
+      throw new ApiException(ApiExceptionEnum.DEAL_DONE_EXCEPTION);
+    }
+
+    User owner = deal.getHousePost().getHouse().getOwner();
+
+    // 거래 완료 처리 권한 조회
+    if (user != owner) {
+      throw new ApiException(ApiExceptionEnum.SELLER_INVALID_EXCEPTION);
+    }
+
+    // 거래 완료
+    deal.modifyStatus();
+
+    // 거래 저장
+    Deal saved = dealRepository.save(deal);
+
+    return saved.getId();
+  }
 }

@@ -9,7 +9,9 @@ import com.kusitms.backend.service.IHouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,5 +37,13 @@ public class HouseController {
     Long response = houseService.createDeal(request, SecurityUtil.getCurrentUserId());
     return ResponseEntity.ok(BaseResponse.builder()
         .data(response).message("거래가 성공적으로 시작되었습니다.").build());
+  }
+
+  @PutMapping("/deal/{dealId}")
+  public ResponseEntity<BaseResponse> modifyDeal(@PathVariable Long dealId) {
+
+    Long response = houseService.modifyDeal(dealId, SecurityUtil.getCurrentUserId());
+    return ResponseEntity.ok(BaseResponse.builder()
+        .data(response).message("거래가 성공적으로 완료되었습니다.").build());
   }
 }

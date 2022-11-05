@@ -31,7 +31,11 @@ public enum ApiExceptionEnum {
 
   // post
   POST_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
-  BUYER_INVALID_EXCEPTION(HttpStatus.BAD_REQUEST, "게시글 작성자는 본인의 집을 구매할 수 없습니다.")
+  BUYER_INVALID_EXCEPTION(HttpStatus.BAD_REQUEST, "게시글 작성자는 본인의 집을 구매할 수 없습니다."),
+
+  // deal
+  SELLER_INVALID_EXCEPTION(HttpStatus.UNAUTHORIZED, "빈 집의 주인만 거래 완료 처리를 할 수 있습니다."),
+  DEAL_DONE_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 거래 완료된 빈 집입니다.")
   ;
 
   private final HttpStatus httpStatus;
