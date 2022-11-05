@@ -11,6 +11,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,7 +122,7 @@ class HouseControllerTest {
         .regionId(1L)
         .build();
 
-    Long response = 1l;
+    Long response = 1L;
 
     // get user data from security context
     when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -143,7 +145,7 @@ class HouseControllerTest {
     resultActions.andExpect(status().isOk())
         .andDo(print())
         .andDo(
-            document("create", getDocumentRequest(), getDocumentResponse(),
+            document("create-house", getDocumentRequest(), getDocumentResponse(),
                 requestFields(
                     fieldWithPath("title").description("빈 집 게시글 제목"),
                     fieldWithPath("imageUrls").description("빈 집 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
@@ -169,8 +171,8 @@ class HouseControllerTest {
   @DisplayName("빈 집 거래 생성")
   void createDeal() throws Exception {
     // request data
-    DealDto.Request request = DealDto.Request.
-        builder()
+    DealDto.Request request = DealDto.Request
+        .builder()
         .postId(1L)
         .build();
 
@@ -201,6 +203,42 @@ class HouseControllerTest {
             document("create-deal", getDocumentRequest(), getDocumentResponse(),
                 requestFields(
                     fieldWithPath("postId").description("빈 집 게시글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("빈 집 거래 ID")
+                )
+            )
+        );
+  }
+
+  @Test
+  @DisplayName("거래 완료")
+  void modifyDeal() throws Exception {
+    // request and response data
+    Long dealId = 1L;
+
+    // get user data from security context
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
+
+    given(houseService.modifyDeal(dealId, email)).willReturn(dealId);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .put("/api/house/deal/{dealId}", dealId)
+            .characterEncoding("utf-8")
+            .accept(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("modify-deal", getDocumentRequest(), getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("dealId").description("빈 집 거래 ID")
                 ),
                 responseFields(
                     fieldWithPath("status").description("결과 코드"),
