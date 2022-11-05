@@ -221,13 +221,13 @@ class AuthControllerTest {
   @DisplayName("전화번호 인증코드 검증")
   void checkSmsCode() throws Exception {
     // request body
-    CheckSmsRequest request = CheckSmsRequest
+    final CheckSmsRequest request = CheckSmsRequest
         .builder()
         .code("1234")
         .contact("01012345678")
         .build();
 
-    String email = "test@test.com";
+    final String email = "test@test.com";
 
     when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);

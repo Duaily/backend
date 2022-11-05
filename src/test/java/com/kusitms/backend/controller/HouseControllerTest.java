@@ -107,7 +107,7 @@ class HouseControllerTest {
   @DisplayName("빈 집 게시글 생성")
   void create() throws Exception {
     // request body
-    HouseDto request = HouseDto.builder()
+    final HouseDto request = HouseDto.builder()
         .title("속초 오션뷰 하우스를 소개합니다.")
         .imageUrls(List.of(
             "image1.address",
@@ -122,7 +122,7 @@ class HouseControllerTest {
         .regionId(1L)
         .build();
 
-    Long response = 1L;
+    final Long response = 1L;
 
     // get user data from security context
     when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -171,13 +171,13 @@ class HouseControllerTest {
   @DisplayName("빈 집 거래 생성")
   void createDeal() throws Exception {
     // request data
-    DealDto.Request request = DealDto.Request
+    final DealDto.Request request = DealDto.Request
         .builder()
         .postId(1L)
         .build();
 
     // response data
-    Long response = 1L;
+    final Long response = 1L;
 
     // get user data from security context
     when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -217,7 +217,7 @@ class HouseControllerTest {
   @DisplayName("거래 완료")
   void modifyDeal() throws Exception {
     // request and response data
-    Long dealId = 1L;
+    final Long dealId = 1L;
 
     // get user data from security context
     when(securityContext.getAuthentication()).thenReturn(authentication);
