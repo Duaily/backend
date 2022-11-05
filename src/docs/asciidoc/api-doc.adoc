@@ -75,6 +75,19 @@ include::{snippets}/create-house/http-response.adoc[]
 ===== Response Fields
 include::{snippets}/create-house/response-fields.adoc[]
 
+=== 3.2 빈 집 게시글 목록 조회 ( 페이징 )
+===== Request
+include::{snippets}/house-list/http-request.adoc[]
+===== Request Example
+include::{snippets}/house-list/request-parameters.adoc[]
+
+===== Response
+include::{snippets}/house-list/http-response.adoc[]
+===== Response Example
+include::{snippets}/house-list/response-body.adoc[]
+===== Response Fields
+include::{snippets}/house-list/response-fields.adoc[]
+
 == 4. 🏕 Region
 
 Region은 지역에 대한 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
@@ -116,7 +129,7 @@ include::{snippets}/aws-s3-delete/http-response.adoc[]
 ===== Response Example
 include::{snippets}/aws-s3-delete/response-fields.adoc[]
 
-== 6. Deal
+== 6. 🫱🏻‍🫲🏼 Deal
 === 6-1. 거래 생성
 ===== Request
 include::{snippets}/create-deal/http-request.adoc[]
