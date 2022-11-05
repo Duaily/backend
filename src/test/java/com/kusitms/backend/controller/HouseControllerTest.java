@@ -19,7 +19,9 @@ import com.kusitms.backend.config.JwtAccessDeniedHandler;
 import com.kusitms.backend.config.JwtAuthenticationEntryPoint;
 import com.kusitms.backend.config.JwtSecurityConfig;
 import com.kusitms.backend.config.TokenProvider;
+import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
+import com.kusitms.backend.repository.DealRepository;
 import com.kusitms.backend.repository.HouseRepository;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.RegionRepository;
@@ -56,6 +58,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @MockBean(JpaMetamodelMappingContext.class)
 class HouseControllerTest {
 
+  // static data
+  final String email = "test@test.com";
   @Autowired
   MockMvc mockMvc;
   @MockBean
@@ -68,6 +72,8 @@ class HouseControllerTest {
   UserRepository userRepository;
   @MockBean
   RegionRepository regionRepository;
+  @MockBean
+  DealRepository dealRepository;
   @MockBean
   TokenProvider tokenProvider;
   @Autowired
@@ -82,9 +88,6 @@ class HouseControllerTest {
   private Authentication authentication;
   @MockBean
   private SecurityContext securityContext;
-
-  // static data
-  final String email = "test@test.com";
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -157,6 +160,52 @@ class HouseControllerTest {
                     fieldWithPath("status").description("결과 코드"),
                     fieldWithPath("message").description("응답 메세지"),
                     fieldWithPath("data").description("빈 집 게시글 ID")
+                )
+            )
+        );
+  }
+
+  @Test
+  @DisplayName("빈 집 거래 생성")
+  void createDeal() throws Exception {
+    // request data
+    DealDto.Request request = DealDto.Request.
+        builder()
+        .postId(1L)
+        .build();
+
+    // response data
+    Long response = 1L;
+
+    // get user data from security context
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
+
+    given(houseService.createDeal(request, email)).willReturn(response);
+
+    String json = objectMapper.writeValueAsString(request);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .post("/api/house/deal")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+            .characterEncoding("utf-8")
+            .accept(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("create-deal", getDocumentRequest(), getDocumentResponse(),
+                requestFields(
+                    fieldWithPath("postId").description("빈 집 게시글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("빈 집 거래 ID")
                 )
             )
         );

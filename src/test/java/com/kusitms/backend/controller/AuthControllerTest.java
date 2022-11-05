@@ -2,8 +2,6 @@ package com.kusitms.backend.controller;
 
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentRequest;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
-import static org.hamcrest.Matchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -21,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kusitms.backend.config.JwtAccessDeniedHandler;
 import com.kusitms.backend.config.JwtAuthenticationEntryPoint;
 import com.kusitms.backend.config.JwtSecurityConfig;
-import com.kusitms.backend.config.SecurityUtil;
 import com.kusitms.backend.config.TokenProvider;
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.CheckSmsRequest;
@@ -30,7 +27,6 @@ import com.kusitms.backend.dto.TokenDto;
 import com.kusitms.backend.repository.UserRepository;
 import com.kusitms.backend.service.IAuthService;
 import com.kusitms.backend.service.IUserService;
-import com.kusitms.backend.service.UserService;
 import com.kusitms.backend.util.RedisClient;
 import com.kusitms.backend.util.SmsClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -148,7 +144,7 @@ class AuthControllerTest {
 
   @Test
   @DisplayName("회원가입")
-  void signUp() throws Exception{
+  void signUp() throws Exception {
     AuthDto.Request request = AuthDto.Request.builder()
         .email("test@naver.com")
         .password("test12345")

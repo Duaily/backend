@@ -64,13 +64,13 @@ class RegionControllerTest {
   @MockBean
   JwtSecurityConfig jwtSecurityConfig;
   @MockBean
-  private Authentication authentication;
-  @MockBean
-  private SecurityContext securityContext;
-  @MockBean
   IRegionService regionService;
   @MockBean
   RegionRepository regionRepository;
+  @MockBean
+  private Authentication authentication;
+  @MockBean
+  private SecurityContext securityContext;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
