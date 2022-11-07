@@ -6,8 +6,12 @@ import com.kusitms.backend.domain.ReviewPost;
 import com.kusitms.backend.dto.ReviewPostDto;
 import com.kusitms.backend.response.BaseResponse;
 import com.kusitms.backend.service.ReviewService;
+import java.awt.print.Pageable;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,9 +46,12 @@ public class ReviewController {
   }
 
   @GetMapping("/list")
-  public ResponseEntity<BaseResponse> getReviewList() {
+  public ResponseEntity<BaseResponse> getReviewPostList(
+      @RequestParam(name = "page", defaultValue = "1") Integer page) {
 
+    List<ReviewPostDto.Response> reviewPageList =
+        reviewService.getReviewPostList(PageRequest.of(page - 1, 8));
     return ResponseEntity.ok(BaseResponse.builder()
-        .message("후기 게시글 목록 조회 성공").data(reviewService.getReviewList()).build());
+        .data(reviewPageList).message("후기 게시글 목록 조회를 성공하셨습니다.").build());
   }
 }

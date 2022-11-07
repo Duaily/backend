@@ -24,9 +24,9 @@ public class ReviewPostDto {
     private ImageFile imageUrl; // 사진
 
 
-    public static ReviewPostDto.Response reviewResponse(Post post) {
+    public static ReviewPostDto.Response reviewResponse(ReviewPost post) {
       return Response.builder().title(post.getTitle())
-          .previewText(((ReviewPost) post).getPreviewText()).user(post.getUser().getNickname())
+          .previewText(post.getPreviewText()).user(post.getUser().getNickname())
           .imageUrl(post.getImageFile()).build();
     }
   }

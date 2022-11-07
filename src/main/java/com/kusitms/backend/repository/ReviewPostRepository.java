@@ -1,13 +1,10 @@
 package com.kusitms.backend.repository;
 
-import com.kusitms.backend.domain.Post;
 import com.kusitms.backend.domain.ReviewPost;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface ReviewPostRepository extends JpaRepository<ReviewPost, Long> {
 
 }
