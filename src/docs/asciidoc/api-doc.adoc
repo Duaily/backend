@@ -65,15 +65,28 @@ House는 빈 집에 대한 빈 집 게시글 작성, 상세 조회, 전체 조�
 
 === 3-1. 빈 집 게시글 작성
 ===== Request
-include::{snippets}/create/http-request.adoc[]
+include::{snippets}/create-house/http-request.adoc[]
 ===== Request Example
-include::{snippets}/create/request-body.adoc[]
+include::{snippets}/create-house/request-body.adoc[]
 ===== Request Fields
-include::{snippets}/create/request-fields.adoc[]
+include::{snippets}/create-house/request-fields.adoc[]
 ===== Response
-include::{snippets}/create/http-response.adoc[]
+include::{snippets}/create-house/http-response.adoc[]
 ===== Response Fields
-include::{snippets}/create/response-fields.adoc[]
+include::{snippets}/create-house/response-fields.adoc[]
+
+=== 3.2 빈 집 게시글 목록 조회 ( 페이징 )
+===== Request
+include::{snippets}/house-list/http-request.adoc[]
+===== Request Example
+include::{snippets}/house-list/request-parameters.adoc[]
+
+===== Response
+include::{snippets}/house-list/http-response.adoc[]
+===== Response Example
+include::{snippets}/house-list/response-body.adoc[]
+===== Response Fields
+include::{snippets}/house-list/response-fields.adoc[]
 
 == 4. 🏕 Region
 
@@ -116,7 +129,7 @@ include::{snippets}/aws-s3-delete/http-response.adoc[]
 ===== Response Example
 include::{snippets}/aws-s3-delete/response-fields.adoc[]
 
-== 6. Deal
+== 6. 🫱🏻‍🫲🏼 Deal
 === 6-1. 거래 생성
 ===== Request
 include::{snippets}/create-deal/http-request.adoc[]
@@ -124,3 +137,13 @@ include::{snippets}/create-deal/http-request.adoc[]
 include::{snippets}/create-deal/http-response.adoc[]
 ===== Response Example
 include::{snippets}/create-deal/response-fields.adoc[]
+
+=== 6.2 거래 완료
+===== Request
+include::{snippets}/modify-deal/http-request.adoc[]
+===== Request Example
+include::{snippets}/modify-deal/path-parameters.adoc[]
+===== Response
+include::{snippets}/modify-deal/http-response.adoc[]
+===== Response Example
+include::{snippets}/modify-deal/response-fields.adoc[]

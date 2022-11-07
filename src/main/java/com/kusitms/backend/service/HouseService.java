@@ -7,16 +7,21 @@ import com.kusitms.backend.domain.Region;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
+import com.kusitms.backend.dto.HousePreviewDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.DealRepository;
+import com.kusitms.backend.repository.HousePostRepository;
 import com.kusitms.backend.repository.HouseRepository;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.RegionRepository;
 import com.kusitms.backend.repository.UserRepository;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class HouseService implements IHouseService {
   private final UserRepository userRepository;
   private final RegionRepository regionRepository;
   private final DealRepository dealRepository;
+  private final HousePostRepository housePostRepository;
 
   @Transactional
   public Long create(String email, HouseDto request) {
@@ -112,4 +118,20 @@ public class HouseService implements IHouseService {
 
     return saved.getId();
   }
+
+  @Transactional
+  public HousePost getDetail(Long houseId) {
+
+    HousePost housePost = (HousePost) postRepository.findById(houseId)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+
+    return housePost;
+  }
+
+  @Transactional
+  public List<HousePreviewDto> getHousePostList(Pageable page) {
+    Page<HousePost> list = housePostRepository.findAll(page);
+    return list.getContent().stream().map(HousePreviewDto::toDto).collect(Collectors.toList());
+  }
+
 }

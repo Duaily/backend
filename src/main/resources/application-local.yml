@@ -12,6 +12,8 @@ spring:
       max-request-size: 10MB
   ## JPA 설정
   jpa:
+    database: mysql   # 추가 해준 부분
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect # 추가 해준 부분
     hibernate:
       ddl-auto: create
     properties:
@@ -26,7 +28,7 @@ spring:
   ## Redis 설정
   redis:
     host: ${REDIS_URL}
-    port: 6378
+    port: 6379
   ## kakao 로그인 설정
   security:
     oauth2:
