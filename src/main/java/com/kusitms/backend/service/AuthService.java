@@ -46,7 +46,6 @@ public class AuthService implements IAuthService {
   private final OauthClient oauthClient;
 
 
-
   @Transactional
   public TokenDto signIn(SignInRequest request) {
 
@@ -114,30 +113,22 @@ public class AuthService implements IAuthService {
   }
 
   @Transactional
-  public TokenDto kakaoSignIn(String code) throws JsonProcessingException {
+  public SignInRequest kakaoSignIn(String code) throws JsonProcessingException {
     // (1) 인가코드로 AccessToken 요청
     String accessToken = oauthClient.getAccessToken(code);
-    log.debug("access token form kakao : " + accessToken);
+
     // (2) 토큰으로 카카오 API 호출 - 유저 정보 조회
     AuthDto.Request authDto = oauthClient.getProfile(accessToken);
-    log.debug("authDto from kakao : " + authDto.getEmail());
+
     // (3) 카카오 계정으로 회원가입 처리
     User user = oauthClient.signUp(authDto);
-    log.debug("user id : " + user.getId());
+
     // (4) 로그인 처리
-    UsernamePasswordAuthenticationToken authenticationToken
-        = new UsernamePasswordAuthenticationToken(
-        user.getEmail(), ""); // email 기반으로 authenticationToken 생성
-    Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-
-    // (5) 토큰 DTO 생성
-    TokenDto tokenDto =  tokenProvider.generateTokenDto(authentication);
-
-    // (6) refresh token 레디스 저장
-    redisClient.setValue(authentication.getName(), tokenDto.getRefreshToken(),
-        tokenProvider.getRefreshTokenExpireTime());
-    log.debug("token : " + tokenDto.getAccessToken());
-    return tokenDto;
+    return SignInRequest
+        .builder()
+        .email(user.getEmail())
+        .password(user.getEmail())
+        .build();
   }
 
   //닉네임 중복 체크

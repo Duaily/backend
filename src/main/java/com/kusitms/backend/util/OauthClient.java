@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -27,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 public class OauthClient {
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Value("${custom.oauth2.kakao.client-id}")
   private String clientId;
@@ -141,6 +143,7 @@ public class OauthClient {
 
     return userRepository.save(User.builder()
         .email(authDto.getEmail())
+        .password(passwordEncoder.encode(authDto.getEmail()))
         .nickname(authDto.getNickname())
         .authority(Authority.ROLE_USER)
         .build());
