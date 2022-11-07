@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kusitms.backend.domain.Authority;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.AuthDto;
+import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.UserRepository;
@@ -49,9 +50,8 @@ public class OauthClient {
    * KaKao 소셜 로그인 시, access-token 조회.
    *
    * @param code 프론트에서 넘어오는 code
-   *
    * @return accessToken 카카오 리소스 서버에서 돌려받은 토큰
-   * */
+   */
   public String getAccessToken(String code) {
     // (1) Header 생성
     HttpHeaders headers = new HttpHeaders();
@@ -91,10 +91,8 @@ public class OauthClient {
    * KaKao 소셜 로그인 시, 사용자 정보 조회.
    *
    * @param accessToken 카카오 서버에서 받은 토큰
-   *
    * @return AuthDto.Request 카카오 서버에서 받은 사용자 정보를 담은 DTO
-   *
-   * */
+   */
   public AuthDto.Request getProfile(String accessToken) throws JsonProcessingException {
 
     HttpHeaders headers = new HttpHeaders();
@@ -132,20 +130,28 @@ public class OauthClient {
    * KaKao 소셜 로그인 시, 회원가입.
    *
    * @param authDto 사용자 정보를 담은 Request Dto
-   *
-   * @return user 회원가입 처리된 사용자 정보
-   * */
-  public User signUp(AuthDto.Request authDto) {
+   * @return SignInRequest 회원가입 처리된 사용자 정보
+   */
+  public SignInRequest signUp(AuthDto.Request authDto) {
 
-    if (userRepository.existsByEmail(authDto.getEmail())) {
-      throw new ApiException(ApiExceptionEnum.AUTH_DUPLICATED_EXCEPTION);
+    SignInRequest signInRequest = SignInRequest
+        .builder()
+        .email(authDto.getEmail())
+        .password(authDto.getEmail())
+        .isInit(false)
+        .build();
+
+    if (userRepository.findByEmail(authDto.getEmail()).isEmpty()) {
+      userRepository.save(User.builder()
+          .email(authDto.getEmail())
+          .password(passwordEncoder.encode(authDto.getEmail()))
+          .nickname(authDto.getNickname())
+          .authority(Authority.ROLE_USER)
+          .build());
+
+      signInRequest.setInit(true);
     }
 
-    return userRepository.save(User.builder()
-        .email(authDto.getEmail())
-        .password(passwordEncoder.encode(authDto.getEmail()))
-        .nickname(authDto.getNickname())
-        .authority(Authority.ROLE_USER)
-        .build());
+    return signInRequest;
   }
 }

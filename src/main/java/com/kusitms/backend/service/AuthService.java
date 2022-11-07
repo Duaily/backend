@@ -46,6 +46,12 @@ public class AuthService implements IAuthService {
   private final OauthClient oauthClient;
 
 
+  /**
+   * 소셜 로그인 .
+   *
+   * @param request 소셜 로그인 시, 사용자 이메일 정보를 담고 있다.
+   * @return TokenDto access-token, refresh-token, expire-time, init
+   * */
   @Transactional
   public TokenDto signIn(SignInRequest request) {
 
@@ -56,6 +62,7 @@ public class AuthService implements IAuthService {
     Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
 
     TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+    tokenDto.setInit(request.isInit()); // 첫 로그인 여부
 
     redisClient.setValue(authentication.getName(), tokenDto.getRefreshToken(),
         tokenProvider.getRefreshTokenExpireTime());
@@ -63,6 +70,13 @@ public class AuthService implements IAuthService {
     return tokenDto;
   }
 
+  /**
+   * 비밀번호 확인.
+   *
+   * @param request 비밀번호 확인용
+   * @param origin 비밀번호 원본
+   *
+   * */
   private void checkPassword(String request, String origin) {
 
     if (!passwordEncoder.matches(request, origin)) {
@@ -121,14 +135,8 @@ public class AuthService implements IAuthService {
     AuthDto.Request authDto = oauthClient.getProfile(accessToken);
 
     // (3) 카카오 계정으로 회원가입 처리
-    User user = oauthClient.signUp(authDto);
-
     // (4) 로그인 처리
-    return SignInRequest
-        .builder()
-        .email(user.getEmail())
-        .password(user.getEmail())
-        .build();
+    return oauthClient.signUp(authDto);
   }
 
   //닉네임 중복 체크
