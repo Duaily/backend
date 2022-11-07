@@ -25,7 +25,7 @@ services:
     restart: always
   spring-boot:
     container_name: duaily-server
-    image: leb0205/duaily_backend:0.0.5
+    image: leb0205/duaily_backend:0.0.7
     restart: always
     ports:
       - "8081:8080"
