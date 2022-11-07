@@ -23,18 +23,6 @@ services:
     networks:
       - db_network
     restart: always
-  spring-boot:
-    container_name: duaily-server
-    image: leb0205/duaily_backend:0.0.5
-    restart: always
-    ports:
-      - "8081:8080"
-    depends_on:
-      - mysql
-      - redis
-    networks:
-      - db_network
-
 networks:
   db_network:
     driver: bridge
