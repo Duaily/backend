@@ -2,6 +2,7 @@ package com.kusitms.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kusitms.backend.config.SecurityUtil;
+import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.CheckSmsRequest;
 import com.kusitms.backend.dto.SignInRequest;
@@ -76,7 +77,8 @@ public class AuthController {
   public ResponseEntity<BaseResponse> kakao(@RequestParam String code)
       throws JsonProcessingException {
 
-    TokenDto tokenDto = authService.kakaoSignIn(code);
+    SignInRequest user = authService.kakaoSignIn(code);
+    TokenDto tokenDto = authService.signIn(user);
 
     return ResponseEntity.ok(BaseResponse.builder()
         .data(tokenDto).message("카카오 간편 로그인에 성공하셨습니다.").build());

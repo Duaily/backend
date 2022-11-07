@@ -28,28 +28,8 @@ spring:
   ## Redis 설정
   redis:
     host: ${REDIS_URL}
-    port: 6379
-  ## kakao 로그인 설정
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect-uri: ${REDIRECT_URL}
-            authorization-grant-type: authorization_code
-            client-authentication-method: POST
-            client-name: kakao
-            scope:
-              - profile_nickname
-              - account_email
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
+    port: 6378
+
 ## AWS 설정
 cloud:
   aws:
@@ -74,3 +54,10 @@ custom:
     api-key: ${SMS_KEY}
     api-secret: ${SMS_SECRET_KEY}
     source: ${SMS_ID}
+  oauth2:
+    kakao:
+      client-id: ${KAKAO_CLIENT_ID}
+      client-secret: ${KAKAO_CLIENT_SECRET}
+      redirect-uri: ${REDIRECT_URL}
+      token-uri: https://kauth.kakao.com/oauth/token
+      profile-uri: https://kapi.kakao.com/v2/user/me
