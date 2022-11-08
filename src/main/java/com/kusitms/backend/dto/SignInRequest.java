@@ -16,4 +16,6 @@ public class SignInRequest {
   private String email;
   @NotNull
   private String password;
+
+  private boolean isInit;
 }
