@@ -147,3 +147,17 @@ include::{snippets}/modify-deal/path-parameters.adoc[]
 include::{snippets}/modify-deal/http-response.adoc[]
 ===== Response Example
 include::{snippets}/modify-deal/response-fields.adoc[]
+
+
+== 6. 📝 Review Post
+
+Review Post는 후기 게시글에 대한 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
+
+===== Request
+include::{snippets}/review-detail/http-request.adoc[]
+===== Request Example
+include::{snippets}/review-detail/path-parameters.adoc[]
+===== Response
+include::{snippets}/review-detail/http-response.adoc[]
+===== Response Example
+include::{snippets}/review-detail/response-fields.adoc[]
