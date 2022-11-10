@@ -153,6 +153,7 @@ include::{snippets}/modify-deal/response-fields.adoc[]
 
 Review Post는 후기 게시글에 대한 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
 
+=== 6.2 후기 게시글 상세 조회
 ===== Request
 include::{snippets}/review-detail/http-request.adoc[]
 ===== Request Example
@@ -161,3 +162,16 @@ include::{snippets}/review-detail/path-parameters.adoc[]
 include::{snippets}/review-detail/http-response.adoc[]
 ===== Response Example
 include::{snippets}/review-detail/response-fields.adoc[]
+
+=== 6.3 후기 게시글 목록 조회 ( 페이징 )
+===== Request
+include::{snippets}/review-list/http-request.adoc[]
+===== Request Example
+include::{snippets}/review-list/request-parameters.adoc[]
+
+===== Response
+include::{snippets}/review-list/http-response.adoc[]
+===== Response Example
+include::{snippets}/review-list/response-body.adoc[]
+===== Response Fields
+include::{snippets}/review-list/response-fields.adoc[]
