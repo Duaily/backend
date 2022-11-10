@@ -4,6 +4,7 @@ import com.kusitms.backend.domain.Post;
 import com.kusitms.backend.domain.ReviewPost;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.ReviewPostDto;
+import com.kusitms.backend.dto.ReviewPostDto.Response;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.PostRepository;
@@ -28,7 +29,7 @@ public class ReviewService {
 
   // 후기 게시글 생성
   @Transactional
-  public Long create(String email, ReviewPostDto request) {
+  public Long create(String email, ReviewPostDto.Request request) {
     // 현재 사용자 조회
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
@@ -47,18 +48,23 @@ public class ReviewService {
 
   // 후기 게시글 상세 조회
   @Transactional
-  public Post getReviewDetail(Long postId) {
-    return postRepository.findById(postId)
+  public ReviewPostDto.Response getReviewDetail(Long postId) {
+    ReviewPost reviewPost = (ReviewPost) postRepository.findById(postId)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+
+    return ReviewPostDto.Response.builder()
+        .title(reviewPost.getTitle()).content(reviewPost.getContent())
+        .imageUrl(reviewPost.getImageFile().getImageUrl())
+        .comments(reviewPost.getComments()).build();
   }
 
   // 후기 게시글 목록 조회
-  public List<ReviewPostDto.Response> getReviewPostList(Pageable page) {
+  public List<ReviewPostDto.PreviewDto> getReviewPostList(Pageable page) {
     Page<ReviewPost> postList = reviewPostRepository.findAll(page);
-    List<ReviewPostDto.Response> reviewDtoList = new ArrayList<>();
+    List<ReviewPostDto.PreviewDto> reviewDtoList = new ArrayList<>();
 
     for (ReviewPost post : postList) {
-      reviewDtoList.add(ReviewPostDto.Response.reviewResponse(post));
+      reviewDtoList.add(ReviewPostDto.PreviewDto.reviewResponse(post));
     }
 
     Collections.reverse(reviewDtoList);

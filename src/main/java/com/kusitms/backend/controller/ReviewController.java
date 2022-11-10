@@ -29,7 +29,7 @@ public class ReviewController {
   private final ReviewService reviewService;
 
   @PostMapping
-  public ResponseEntity<BaseResponse> create(@RequestBody ReviewPostDto request) {
+  public ResponseEntity<BaseResponse> create(@RequestBody ReviewPostDto.Request request) {
 
     Long response = reviewService.create(SecurityUtil.getCurrentUserId(), request);
     return ResponseEntity.ok(BaseResponse.builder()
@@ -39,9 +39,9 @@ public class ReviewController {
   @GetMapping("/{postId}")
   public ResponseEntity<BaseResponse> getReviewDetail(@PathVariable Long postId) {
 
-    Post reviewPost = reviewService.getReviewDetail(postId);
+    ReviewPostDto.Response reviewPost = reviewService.getReviewDetail(postId);
     return ResponseEntity.ok(BaseResponse.builder()
-        .message("후기 게시글 상세 조회 성공").data(reviewPost).build());
+        .message("후기 게시글 상세 조회를 성공하셨습니다.").data(reviewPost).build());
 
   }
 
@@ -49,7 +49,7 @@ public class ReviewController {
   public ResponseEntity<BaseResponse> getReviewPostList(
       @RequestParam(name = "page", defaultValue = "1") Integer page) {
 
-    List<ReviewPostDto.Response> reviewPageList =
+    List<ReviewPostDto.PreviewDto> reviewPageList =
         reviewService.getReviewPostList(PageRequest.of(page - 1, 8));
     return ResponseEntity.ok(BaseResponse.builder()
         .data(reviewPageList).message("후기 게시글 목록 조회를 성공하셨습니다.").build());
