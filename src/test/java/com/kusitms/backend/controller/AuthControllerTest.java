@@ -102,6 +102,7 @@ class AuthControllerTest {
     SignInRequest dto = SignInRequest.builder()
         .email("test")
         .password("test12345")
+        .isInit(false)
         .build();
 
     TokenDto tokenDto = TokenDto.builder()
@@ -109,6 +110,7 @@ class AuthControllerTest {
         .accessToken("access-token")
         .refreshToken("refresh-token")
         .accessTokenExpireTime(30L)
+        .isInit(true)
         .build();
 
     given(authService.signIn(dto)).willReturn(tokenDto);
@@ -130,7 +132,8 @@ class AuthControllerTest {
             document("sign-in", getDocumentRequest(), getDocumentResponse(),
                 requestFields(
                     fieldWithPath("email").description("이메일"),
-                    fieldWithPath("password").description("비밀번호")
+                    fieldWithPath("password").description("비밀번호"),
+                    fieldWithPath("init").description("최초 회원가입 여부")
                 ),
                 responseFields(
                     fieldWithPath("status").description("결과 코드"),
@@ -138,7 +141,8 @@ class AuthControllerTest {
                     fieldWithPath("data.grantType").description("승인 유형"),
                     fieldWithPath("data.accessToken").description("AccessToken"),
                     fieldWithPath("data.refreshToken").description("RefreshToken"),
-                    fieldWithPath("data.accessTokenExpireTime").description("AccessToken 만료시간")
+                    fieldWithPath("data.accessTokenExpireTime").description("AccessToken 만료시간"),
+                    fieldWithPath("data.init").description("최초 회원가입 여부")
                 )));
   }
 
