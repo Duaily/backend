@@ -54,7 +54,7 @@ jobs:
       run: |
           cd ./src/main/resources
           touch ./application-prod.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" >./application-prod.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
       shell: bash
       
     # 7) 빌드
