@@ -81,7 +81,4 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         envs: GITHUB_SHA
         script: |
-            sudo docker rm duaily -f
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily
-            docker-compose up -d
-            docker imgae prune -f
+            whoami
