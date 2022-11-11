@@ -50,7 +50,6 @@ jobs:
     
     # 6) Set for yml
     - name: Make application-prod.yml
-      if: contains(github.ref, 'main')
       run: |
           cd ./src/main/resources
           touch ./application-local.yml
