@@ -75,7 +75,7 @@ jobs:
       id: deploy-prod
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
+        username: ubuntu
         key: ${{ secrets.EC2_KEY }}
         envs: GITHUB_SHA
         script: |
