@@ -68,5 +68,15 @@ jobs:
         docker build -f Dockerfile-prod -t duaily .
         docker tag duaily ${{ secrets.DOCKER_USERNAME }}/duaily_backend
         docker push ${{ secrets.DOCKER_USERNAME }}/duaily_backend
-    
+
+    # 9) Deploy
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      id: deploy-prod
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+            whoami
 
