@@ -1,6 +1,8 @@
 package com.kusitms.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.kusitms.backend.domain.User;
+import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.AuthDto.Request;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
@@ -14,9 +16,10 @@ public interface IAuthService {
 
   boolean checkNicknameDuplication(String nickname);
 
-  void signUp(Request request);
-
   TokenDto reissue(TokenRequestDto request);
 
-  TokenDto kakaoSignIn(String code) throws JsonProcessingException;
+  String signUp(Request request);
+
+  SignInRequest kakaoSignIn(String code) throws JsonProcessingException;
+
 }

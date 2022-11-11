@@ -3,10 +3,17 @@ package com.kusitms.backend.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.http.MediaType;
 
 public class AuthDto {
   @Data
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Request {
     @NotBlank(message = "비밀번호를 입력해주세요.")
     @Size(min = 8, message = "비밀번호는 8글자 이상 입력해주세요.")
@@ -22,9 +29,8 @@ public class AuthDto {
   }
 
   @Data
+  @Builder
   public static class Response {
-    @NotBlank String loginId;
-    @NotBlank String email;
     @NotBlank String nickname;
   }
 

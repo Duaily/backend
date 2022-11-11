@@ -1,11 +1,12 @@
-server:
-  port: 8080
 spring:
   datasource:
     url: jdbc:mysql://localhost:3305/test_db?useSSL=false&serverTimezone=Asia/Seoul
     username: test
     password: test_pw
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    database: mysql   # 추가 해준 부분
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect # 추가 해준 부분
     hibernate:
       ddl-auto: update
     show-sql: true

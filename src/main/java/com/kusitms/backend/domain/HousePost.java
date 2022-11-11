@@ -29,6 +29,8 @@ public class HousePost extends Post {
     housePost.setImageFile(house.getImageFileSet().stream().findFirst().orElse(null));
     housePost.setUser(user);
     housePost.setRegion(region);
+
+    // 댓글 추가하기
     return housePost;
   }
 }

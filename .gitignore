@@ -44,3 +44,5 @@ out/
 /config/local.env
 application-secret.yml
 application-test.yml
+
+api-doc.html

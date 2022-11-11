@@ -1,8 +1,21 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.domain.HousePost;
+import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
+import com.kusitms.backend.dto.HousePreviewDto;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface IHouseService {
 
   Long create(String email, HouseDto dto);
+
+  Long createDeal(DealDto.Request request, String email);
+
+  Long modifyDeal(Long dealId, String email);
+
+  HousePost getDetail(Long houseId);
+
+  List<HousePreviewDto> getHousePostList(Pageable page);
 }

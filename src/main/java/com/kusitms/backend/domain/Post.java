@@ -2,6 +2,7 @@ package com.kusitms.backend.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -32,7 +33,7 @@ public abstract class Post extends MetaEntity {
   @Size(max = 50)
   private String title; // 제목
 
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   private ImageFile imageFile; // 대표사진
 
   @ManyToOne
