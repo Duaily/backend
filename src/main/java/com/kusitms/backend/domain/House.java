@@ -38,6 +38,9 @@ public class House extends MetaEntity {
   private String size; // 집 크기
   private LocalDate createdDate; // 준공연도
   private String purpose; // 용도
+  private String deposit; // 보증금
+  private String maintenance; // 관리비
+  private String monthlyRent; // 월세
 
   @JsonIgnore
   @OneToMany(cascade = CascadeType.ALL)
@@ -61,6 +64,9 @@ public class House extends MetaEntity {
         .owner(user)
         .price(request.getPrice())
         .purpose(request.getPurpose())
+        .deposit(request.getDeposit())
+        .maintenance(request.getMaintenance())
+        .monthlyRent(request.getMonthlyRent())
         .imageFileSet(request.getImageUrls()
             .stream()
             .map(ImageFile::toEntity)
