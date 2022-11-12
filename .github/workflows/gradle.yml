@@ -77,6 +77,6 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         script: |
             sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily
-            docker-compose up -d
-            docker imgae prune -f
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily_backend
+            sudo docker stop server
+            sudo docker run -d --rm --name server -p 80:8080 duaily
