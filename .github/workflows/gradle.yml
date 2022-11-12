@@ -76,5 +76,8 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_KEY }}
         script: |
+            docker stop duaily
+            docker rm duaily
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily_backend
-            sudo docker run -d --rm --name duaily -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/duaily_backend
+            sudo docker run -d --name duaily -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/duaily_backend
+            docker rmi -f $(docker images -f "dangling=true" -q)
