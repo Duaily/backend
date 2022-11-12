@@ -65,7 +65,6 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -f Dockerfile-prod -t duaily .
-        docker tag duaily ${{ secrets.DOCKER_USERNAME }}/duaily_backend
         docker push ${{ secrets.DOCKER_USERNAME }}/duaily_backend
 
     # 9) Deploy
@@ -78,4 +77,4 @@ jobs:
         script: |
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily_backend
-            sudo docker run -d --rm --name duaily -p 80:8080 duaily
+            sudo docker run -d --name duaily -p 80:8080 duaily
