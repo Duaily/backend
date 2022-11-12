@@ -129,16 +129,17 @@ class ReviewControllerTest {
                 requestFields(
                     fieldWithPath("title").description("후기 게시글 내용"),
                     fieldWithPath("content").description("후기 게시글 내용"),
-                    fieldWithPath("imageUrls").description("후기 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
-                    fieldWithPath("data.title").description("후기 게시글 제목"),
-                    fieldWithPath("data.content").description("후기 게시글 내용"),
-                    fieldWithPath("data.imageUrl").description("대표 이미지 url"),
-                    fieldWithPath("data.comments").description("해당 게시글의 댓글")
+                    fieldWithPath("imageUrls").description("후기 게시글 첨부 사진 주소 리스트 ( 최대 5장 )")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("후기 게시글 ID")
                 )
             )
         );
-
   }
+
 
   @Test
   @DisplayName("후기 게시글 상세 조회")
