@@ -20,17 +20,33 @@ public class HousePreviewDto {
   private String location;
   private Integer minPrice;
   private Integer maxPrice;
+  private String deposit;
+  private String cost;
   private String author;
 
+  @SuppressWarnings("checkstyle:Indentation")
   public static HousePreviewDto toDto(HousePost housePost) {
-    String origin = housePost.getHouse().getPrice();
-    String start = origin.split("")[0];
-    int length = origin.length();
-    StringBuilder min = new StringBuilder(start);
-    StringBuilder max = new StringBuilder(String.valueOf(Integer.parseInt(start) + 1));
-    for (int i = 0; i < length - 1; i++) {
-      min.append('0');
-      max.append('0');
+    if (housePost.getHouse().getPrice().getCategory().toString().equals("MINE")) {
+      String origin = housePost.getHouse().getPrice().getCost();
+      String start = origin.split("")[0];
+      int length = origin.length();
+      StringBuilder min = new StringBuilder(start);
+      StringBuilder max = new StringBuilder(String.valueOf(Integer.parseInt(start) + 1));
+      for (int i = 0; i < length - 1; i++) {
+        min.append('0');
+        max.append('0');
+      }
+
+      return HousePreviewDto.builder()
+          .postId(housePost.getId())
+          .imageUrl(housePost.getImageFile().getImageUrl())
+          .title(housePost.getTitle())
+          .location(housePost.getHouse().getAddress().getCity() + " "
+              + housePost.getHouse().getAddress().getStreet())
+          .minPrice(Integer.parseInt(min.toString()))
+          .maxPrice(Integer.parseInt(max.toString()))
+          .author(housePost.getUser().getNickname())
+          .build();
     }
 
     return HousePreviewDto.builder()
@@ -39,10 +55,10 @@ public class HousePreviewDto {
         .title(housePost.getTitle())
         .location(housePost.getHouse().getAddress().getCity() + " "
             + housePost.getHouse().getAddress().getStreet())
-        .minPrice(Integer.parseInt(min.toString()))
-        .maxPrice(Integer.parseInt(max.toString()))
+        .cost(housePost.getHouse().getPrice().getCost())
+        .deposit(housePost.getHouse().getPrice().getDeposit())
         .author(housePost.getUser().getNickname())
         .build();
   }
-
 }
+
