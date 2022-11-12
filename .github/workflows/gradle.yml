@@ -77,4 +77,4 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily_backend
-            sudo docker run -d --name duaily -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/duaily_backend
+            sudo docker run -d --rm --name duaily -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/duaily_backend
