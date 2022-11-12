@@ -3,10 +3,12 @@ package com.kusitms.backend.controller;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentRequest;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -35,9 +37,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -51,6 +57,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @MockBean(JpaMetamodelMappingContext.class)
 class ReviewControllerTest {
 
+  final String email = "test@test.com";
   @Autowired
   MockMvc mockMvc;
   @MockBean
@@ -69,6 +76,10 @@ class ReviewControllerTest {
   JwtAccessDeniedHandler jwtAccessDeniedHandler;
   @MockBean
   JwtSecurityConfig jwtSecurityConfig;
+  @MockBean
+  private Authentication authentication;
+  @MockBean
+  private SecurityContext securityContext;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -80,6 +91,53 @@ class ReviewControllerTest {
             .withRequestDefaults(prettyPrint())
             .withResponseDefaults(prettyPrint()))
         .build();
+  }
+
+  @Test
+  @DisplayName("후기 게시글 생성")
+  void create() throws Exception {
+    final ReviewPostDto.Request request = ReviewPostDto.Request.builder()
+        .title("듀얼리 하우스 후기")
+        .content("듀얼리 하우스 너무 좋아요!")
+        .imageUrls(List.of(
+            "image1.address",
+            "image2.address"))
+        .build();
+
+    final Long response = 1L;
+
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
+
+    given(reviewService.create(email, request)).willReturn(response);
+
+    String json = objectMapper.writeValueAsString(request);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .post("/api/review")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+            .characterEncoding("utf-8")
+            .accept(MediaType.APPLICATION_JSON)
+    );
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("create-review", getDocumentRequest(), getDocumentResponse(),
+                requestFields(
+                    fieldWithPath("title").description("후기 게시글 내용"),
+                    fieldWithPath("content").description("후기 게시글 내용"),
+                    fieldWithPath("imageUrls").description("후기 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
+                    fieldWithPath("data.title").description("후기 게시글 제목"),
+                    fieldWithPath("data.content").description("후기 게시글 내용"),
+                    fieldWithPath("data.imageUrl").description("대표 이미지 url"),
+                    fieldWithPath("data.comments").description("해당 게시글의 댓글")
+                )
+            )
+        );
+
   }
 
   @Test
@@ -170,7 +228,5 @@ class ReviewControllerTest {
         );
 
   }
-
-
 }
 
