@@ -1,8 +1,11 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.domain.HousePost;
 import com.kusitms.backend.domain.Region;
 import com.kusitms.backend.domain.RegionPost;
 import com.kusitms.backend.dto.RegionDto;
+import com.kusitms.backend.exception.ApiException;
+import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.RegionRepository;
 import com.kusitms.backend.repository.UserRepository;
@@ -37,5 +40,15 @@ public class RegionService implements IRegionService {
 
     // 지역 게시글 아이디 반환
     return saved.getId();
+  }
+
+
+  @Transactional
+  public RegionPost getDetail(Long regionId) {
+
+    RegionPost regionPost = (RegionPost) postRepository.findById(regionId)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
+
+    return regionPost;
   }
 }

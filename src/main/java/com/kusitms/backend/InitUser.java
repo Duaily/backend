@@ -1,6 +1,8 @@
 package com.kusitms.backend;
 
 import com.kusitms.backend.domain.Authority;
+import com.kusitms.backend.domain.Region;
+import com.kusitms.backend.domain.RegionPost;
 import com.kusitms.backend.domain.User;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -14,10 +16,34 @@ import org.springframework.stereotype.Component;
 public class InitUser {
 
   private final InitUserService initUserService;
+  private final InitRegionService initRegionService;
 
-  // @PostConstruct
+  @PostConstruct
   public void init() {
     initUserService.init();
+    initRegionService.init();
+  }
+
+  @Component
+  @RequiredArgsConstructor
+  static  class InitRegionService {
+
+    private final EntityManager entityManager;
+
+
+    @Transactional
+    public  void init() {
+      Region region = Region.builder()
+              .info("info ")
+              .build();
+
+      entityManager.persist(region);
+
+      RegionPost regionPost = new RegionPost();
+      regionPost.setRegion(region);
+
+      entityManager.persist(regionPost);
+    }
   }
 
   @Component
