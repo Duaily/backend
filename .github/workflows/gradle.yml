@@ -71,12 +71,12 @@ jobs:
     # 9) Deploy
     - name: Deploy
       uses: appleboy/ssh-action@master
-      id: deploy-prod
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
+        username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_KEY }}
-        envs: GITHUB_SHA
         script: |
-            whoami
-
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily
+            docker-compose up -d
+            docker imgae prune -f
