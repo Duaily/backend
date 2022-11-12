@@ -99,7 +99,6 @@ include::{snippets}/create/http-request.adoc[]
 include::{snippets}/create/request-body.adoc[]
 ===== Request Fields
 include::{snippets}/create/request-fields.adoc[]
-
 ===== Response
 include::{snippets}/create/http-response.adoc[]
 ===== Response Example
@@ -152,6 +151,18 @@ include::{snippets}/modify-deal/response-fields.adoc[]
 == 6. 📝 Review Post
 
 Review Post는 후기 게시글에 대한 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
+
+=== 6.1 후기 게시글 생성
+===== Request
+include::{snippets}/create-review/http-request.adoc[]
+===== Request Example
+include::{snippets}/create-review/request-body.adoc[]
+===== Request Fields
+include::{snippets}/create-review/request-fields.adoc[]
+===== Response
+include::{snippets}/create-review/http-response.adoc[]
+===== Response Example
+include::{snippets}/create-review/response-fields.adoc[]
 
 === 6.2 후기 게시글 상세 조회
 ===== Request
