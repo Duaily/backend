@@ -1,6 +1,7 @@
 package com.kusitms.backend;
 
 import com.kusitms.backend.domain.Authority;
+import com.kusitms.backend.domain.Region;
 import com.kusitms.backend.domain.User;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -15,7 +16,7 @@ public class InitUser {
 
   private final InitUserService initUserService;
 
-  // @PostConstruct
+  @PostConstruct
   public void init() {
     initUserService.init();
   }
@@ -50,6 +51,10 @@ public class InitUser {
         entityManager.persist(broker);
 
       }
+
+      Region region = Region.builder()
+          .build();
+      entityManager.persist(region);
     }
   }
 }

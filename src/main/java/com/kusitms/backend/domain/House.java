@@ -33,6 +33,7 @@ public class House extends MetaEntity {
 
   @Embedded
   private Address address; // 도로명 주소
+
   @Embedded
   private Price price; // 구체적 가격
   private String size; // 집 크기

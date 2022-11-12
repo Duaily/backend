@@ -24,7 +24,6 @@ public class HousePreviewDto {
   private String cost;
   private String author;
 
-  @SuppressWarnings("checkstyle:Indentation")
   public static HousePreviewDto toDto(HousePost housePost) {
     if (housePost.getHouse().getPrice().getCategory().toString().equals("MINE")) {
       String origin = housePost.getHouse().getPrice().getCost();
@@ -47,18 +46,18 @@ public class HousePreviewDto {
           .maxPrice(Integer.parseInt(max.toString()))
           .author(housePost.getUser().getNickname())
           .build();
+    } else {
+      return HousePreviewDto.builder()
+          .postId(housePost.getId())
+          .imageUrl(housePost.getImageFile().getImageUrl())
+          .title(housePost.getTitle())
+          .location(housePost.getHouse().getAddress().getCity() + " "
+              + housePost.getHouse().getAddress().getStreet())
+          .cost(housePost.getHouse().getPrice().getCost())
+          .deposit(housePost.getHouse().getPrice().getDeposit())
+          .author(housePost.getUser().getNickname())
+          .build();
     }
-
-    return HousePreviewDto.builder()
-        .postId(housePost.getId())
-        .imageUrl(housePost.getImageFile().getImageUrl())
-        .title(housePost.getTitle())
-        .location(housePost.getHouse().getAddress().getCity() + " "
-            + housePost.getHouse().getAddress().getStreet())
-        .cost(housePost.getHouse().getPrice().getCost())
-        .deposit(housePost.getHouse().getPrice().getDeposit())
-        .author(housePost.getUser().getNickname())
-        .build();
   }
 }
 
