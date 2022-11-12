@@ -73,6 +73,11 @@ public class AuthController {
         .message("회원 탈퇴에 성공하셨습니다.").build());
   }
 
+  /**
+   * KaKao social sign-in.
+   *
+   * @param code 인증코드.
+   * */
   @GetMapping("/kakao")
   public ResponseEntity<BaseResponse> kakao(@RequestParam String code)
       throws JsonProcessingException {
