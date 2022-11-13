@@ -79,5 +79,5 @@ jobs:
             docker stop duaily
             docker rm duaily
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily_backend
-            sudo docker run -d --name duaily -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/duaily_backend
+            sudo docker run -d --name duaily -p 8080:8080 --network test ${{ secrets.DOCKER_USERNAME }}/duaily_backend
             docker rmi -f $(docker images -f "dangling=true" -q)
