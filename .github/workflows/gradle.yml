@@ -49,11 +49,11 @@ jobs:
       run: ./gradlew build -x test
     
     # 6) Set for yml
-    - name: Make application-prod.yml
+    - name: Make application.yml
       run: |
           cd ./src/main/resources
-          touch ./application-local.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-local.yml
+          touch ./application.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.yml
       shell: bash
       
     # 7) 빌드
