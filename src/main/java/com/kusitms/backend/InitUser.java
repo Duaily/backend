@@ -76,6 +76,10 @@ public class InitUser {
         entityManager.persist(broker);
 
       }
+
+      Region region = Region.builder()
+          .build();
+      entityManager.persist(region);
     }
   }
 }

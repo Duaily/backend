@@ -17,10 +17,12 @@ public class HouseDto {
   private String city;
   private String street;
   private String zipcode;
-  private String price; // 구체적 가격
+  private String cost; // 가격
   private String size; // 집 크기
   @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
   private LocalDate createdDate; // 준공연도
   private String purpose; // 용도
+  private String deposit; // 보증금
+  private String category; // 카테고리(매매/월세)
   private Long regionId; // 지역 Id
 }
