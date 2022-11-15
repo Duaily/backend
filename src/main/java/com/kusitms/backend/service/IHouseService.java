@@ -18,4 +18,6 @@ public interface IHouseService {
   HousePost getDetail(Long houseId);
 
   List<HousePreviewDto> getHousePostList(Pageable page);
+
+  int getHousePostCount();
 }
