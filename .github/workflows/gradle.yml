@@ -49,11 +49,11 @@ jobs:
       run: ./gradlew build -x test
     
     # 6) Set for yml
-    - name: Make application-prod.yml
+    - name: Make application.yml
       run: |
           cd ./src/main/resources
-          touch ./application-local.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-local.yml
+          touch ./application.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.yml
       shell: bash
       
     # 7) 빌드
@@ -71,12 +71,13 @@ jobs:
     # 9) Deploy
     - name: Deploy
       uses: appleboy/ssh-action@master
-      id: deploy-prod
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
+        username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_KEY }}
-        envs: GITHUB_SHA
         script: |
-            whoami
-
+            docker stop duaily
+            docker rm duaily
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/duaily_backend
+            sudo docker-compose up -d
+            docker rmi -f $(docker images -f "dangling=true" -q)

@@ -25,6 +25,15 @@ public class HousePreviewDto {
   private String author;
 
   public static HousePreviewDto toDto(HousePost housePost) {
+    HousePreviewDto housePreviewDtoBuild = HousePreviewDto.builder()
+        .postId(housePost.getId())
+        .imageUrl(housePost.getImageFile().getImageUrl())
+        .title(housePost.getTitle())
+        .location(housePost.getHouse().getAddress().getCity() + " "
+            + housePost.getHouse().getAddress().getStreet())
+        .author(housePost.getUser().getNickname())
+        .build();
+
     if (housePost.getHouse().getPrice().getCategory().toString().equals("MINE")) {
       String origin = housePost.getHouse().getPrice().getCost();
       String start = origin.split("")[0];
@@ -35,29 +44,14 @@ public class HousePreviewDto {
         min.append('0');
         max.append('0');
       }
+      housePreviewDtoBuild.setMinPrice(Integer.parseInt(min.toString()));
+      housePreviewDtoBuild.setMaxPrice(Integer.parseInt(max.toString()));
 
-      return HousePreviewDto.builder()
-          .postId(housePost.getId())
-          .imageUrl(housePost.getImageFile().getImageUrl())
-          .title(housePost.getTitle())
-          .location(housePost.getHouse().getAddress().getCity() + " "
-              + housePost.getHouse().getAddress().getStreet())
-          .minPrice(Integer.parseInt(min.toString()))
-          .maxPrice(Integer.parseInt(max.toString()))
-          .author(housePost.getUser().getNickname())
-          .build();
     } else {
-      return HousePreviewDto.builder()
-          .postId(housePost.getId())
-          .imageUrl(housePost.getImageFile().getImageUrl())
-          .title(housePost.getTitle())
-          .location(housePost.getHouse().getAddress().getCity() + " "
-              + housePost.getHouse().getAddress().getStreet())
-          .cost(housePost.getHouse().getPrice().getCost())
-          .deposit(housePost.getHouse().getPrice().getDeposit())
-          .author(housePost.getUser().getNickname())
-          .build();
+      housePreviewDtoBuild.setCost(housePost.getHouse().getPrice().getCost());
+      housePreviewDtoBuild.setDeposit(housePost.getHouse().getPrice().getDeposit());
     }
+    return housePreviewDtoBuild;
   }
 }
 
