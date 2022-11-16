@@ -52,8 +52,8 @@ jobs:
     - name: Make application.yml
       run: |
           cd ./src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.yml
+          touch ./application-pord.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
       shell: bash
       
     # 7) 빌드
