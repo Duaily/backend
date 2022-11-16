@@ -45,15 +45,15 @@ jobs:
       run: chmod +x gradlew
     
     # 5) Build exclude test package
-    - name: Build with gradle
-      run: ./gradlew build -x test
+    #- name: Build with gradle
+    #  run: ./gradlew build -x test
     
     # 6) Set for yml
-    - name: Make application.yml
+    - name: Make application-secret.yml
       run: |
           cd ./src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.yml
+          touch ./application-secret.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-secret.yml
       shell: bash
       
     # 7) 빌드
@@ -64,7 +64,7 @@ jobs:
     - name: docker build and push
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -f Dockerfile-prod -t duaily .
+        docker build -f Dockerfile -t duaily .
         docker tag duaily ${{ secrets.DOCKER_USERNAME }}/duaily_backend
         docker push ${{ secrets.DOCKER_USERNAME }}/duaily_backend
 
