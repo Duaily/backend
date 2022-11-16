@@ -1,25 +1,13 @@
 package com.kusitms.backend.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageResponse {
-  private final Integer status = HttpStatus.OK.value();
-
-  private String message;
-
-  @JsonProperty
-  private Object data;
-
+public class PageResponse extends BaseResponse {
   private int page; // 현재 페이지
-
   private int totalCount; // 총 페이지 수
 }

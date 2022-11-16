@@ -35,10 +35,9 @@ public class HouseController {
     List<HousePreviewDto> response = houseService.getHousePostList(PageRequest.of(page - 1, 8));
 
     int totalCount = houseService.getHousePostCount() / 8 + 1;
-
-    return ResponseEntity.ok(PageResponse.builder()
-        .data(response).message("빈 집 게시글 목록 조회를 성공하셨습니다.")
-        .page(page).totalCount(totalCount).build());
+    return ResponseEntity.ok(PageResponse.builder().data(response)
+        .message("빈 집 게시글 목록 조회를 성공하셨습니다.").page(page)
+        .totalCount(totalCount).build());
   }
 
   @PostMapping
