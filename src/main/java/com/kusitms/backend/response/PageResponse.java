@@ -1,13 +1,16 @@
 package com.kusitms.backend.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+@Data
+@EqualsAndHashCode(callSuper = false)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageResponse extends BaseResponse {
-  private int page; // 현재 페이지
-  private int totalCount; // 총 페이지 수
+  private PageInfo pageInfo; // 페이지 정보
 }

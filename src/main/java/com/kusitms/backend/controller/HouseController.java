@@ -6,6 +6,7 @@ import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.dto.HousePreviewDto;
 import com.kusitms.backend.response.BaseResponse;
+import com.kusitms.backend.response.PageInfo;
 import com.kusitms.backend.response.PageResponse;
 import com.kusitms.backend.service.IHouseService;
 import java.util.List;
@@ -32,12 +33,18 @@ public class HouseController {
   public ResponseEntity<PageResponse> getHousePostList(
       @RequestParam(name = "page", defaultValue = "1") Integer page
   ) {
-    List<HousePreviewDto> response = houseService.getHousePostList(PageRequest.of(page - 1, 8));
+    int size = 8;
+    int totalElements = houseService.getHousePostCount();
+    int totalPages = totalElements / size + 1;
 
-    int totalCount = houseService.getHousePostCount() / 8 + 1;
-    return ResponseEntity.ok(PageResponse.builder().data(response)
-        .message("빈 집 게시글 목록 조회를 성공하셨습니다.").page(page)
-        .totalCount(totalCount).build());
+    List<HousePreviewDto> response = houseService.getHousePostList(PageRequest.of(page - 1, size));
+
+    PageInfo pageInfo = PageInfo.builder().page(page).size(size)
+        .totalElements(totalElements).totalPages(totalPages)
+        .build();
+
+    return ResponseEntity.ok(PageResponse.builder().message("빈 집 게시글 목록 조회를 성공하셨습니다.")
+        .data(response).pageInfo(pageInfo).build());
   }
 
   @PostMapping
