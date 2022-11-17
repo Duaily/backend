@@ -25,3 +25,16 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+
+## Logging
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
