@@ -6,12 +6,12 @@ import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.dto.HousePreviewDto;
 import com.kusitms.backend.response.BaseResponse;
-import com.kusitms.backend.service.HouseService;
+import com.kusitms.backend.response.PageInfo;
+import com.kusitms.backend.response.PageResponse;
 import com.kusitms.backend.service.IHouseService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +30,21 @@ public class HouseController {
   private final IHouseService houseService;
 
   @GetMapping("/list")
-  public ResponseEntity<BaseResponse> getHousePostList(
+  public ResponseEntity<PageResponse> getHousePostList(
       @RequestParam(name = "page", defaultValue = "1") Integer page
   ) {
-    List<HousePreviewDto> response = houseService.getHousePostList(PageRequest.of(page - 1, 8));
-    return ResponseEntity.ok(BaseResponse.builder()
-        .data(response).message("빈 집 게시글 목록 조회를 성공하셨습니다.").build());
+    int size = 8;
+    int totalElements = houseService.getHousePostCount();
+    int totalPages = totalElements / size + 1;
+
+    List<HousePreviewDto> response = houseService.getHousePostList(PageRequest.of(page - 1, size));
+
+    PageInfo pageInfo = PageInfo.builder().page(page).size(size)
+        .totalElements(totalElements).totalPages(totalPages)
+        .build();
+
+    return ResponseEntity.ok(PageResponse.builder().message("빈 집 게시글 목록 조회를 성공하셨습니다.")
+        .data(response).pageInfo(pageInfo).build());
   }
 
   @PostMapping
