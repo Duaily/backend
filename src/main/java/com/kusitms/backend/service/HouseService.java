@@ -134,4 +134,9 @@ public class HouseService implements IHouseService {
     return list.getContent().stream().map(HousePreviewDto::toDto).collect(Collectors.toList());
   }
 
+  // 빈 집 게시글의 총 개수 반환
+  public int getHousePostCount() {
+    return housePostRepository.findAll().size();
+  }
+
 }
