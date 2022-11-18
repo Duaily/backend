@@ -21,8 +21,9 @@ public enum ApiExceptionEnum {
 
   // Auth
   TOKEN_EXPIRE_TIME_OUT_EXCEPTION(HttpStatus.UNAUTHORIZED, "토큰 유효시간이 만료되었습니다."),
-  TOKEN_DISCREPANCY_EXCEPTION(HttpStatus.UNAUTHORIZED, "토큰이 일치하지 않습니다."),
+  TOKEN_DISCREPANCY_EXCEPTION(HttpStatus.UNAUTHORIZED, "access 토큰이 일치하지 않습니다."),
   TOKEN_INVALID_EXCEPTION(HttpStatus.FORBIDDEN, "권한 정보가 없는 토큰입니다."),
+  REFRESHTOKEN_DISCREPANCY_EXCEPTION(HttpStatus.UNAUTHORIZED, "Refresh 토큰이 일치하지 않습니다."),
   PASSWORD_DISCREPANCY_EXCEPTION(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
   AUTH_DUPLICATED_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 가입된 사용자입니다."),
@@ -35,8 +36,8 @@ public enum ApiExceptionEnum {
 
   // deal
   SELLER_INVALID_EXCEPTION(HttpStatus.UNAUTHORIZED, "빈 집의 주인만 거래 완료 처리를 할 수 있습니다."),
-  DEAL_DONE_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 거래 완료된 빈 집입니다.")
-  ;
+  DEAL_DONE_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 거래 완료된 빈 집입니다."),
+;
 
   private final HttpStatus httpStatus;
   private final Integer status;

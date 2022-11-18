@@ -104,7 +104,7 @@ public class AuthService implements IAuthService {
   @Transactional
   public TokenDto reissue(TokenRequestDto request) {
 
-    if (!tokenProvider.validateToken(request.getRefreshToken())) {
+    if (!tokenProvider.validateToken(request.getAccessToken())) {
       throw new ApiException(ApiExceptionEnum.TOKEN_DISCREPANCY_EXCEPTION);
     }
 
@@ -115,7 +115,7 @@ public class AuthService implements IAuthService {
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.TOKEN_EXPIRE_TIME_OUT_EXCEPTION));
 
     if (!refreshToken.equals(request.getRefreshToken())) {
-      throw new ApiException(ApiExceptionEnum.TOKEN_DISCREPANCY_EXCEPTION);
+      throw new ApiException(ApiExceptionEnum.REFRESHTOKEN_DISCREPANCY_EXCEPTION);
     }
 
     TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
