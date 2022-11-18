@@ -24,6 +24,7 @@ import com.kusitms.backend.dto.AuthDto;
 import com.kusitms.backend.dto.CheckSmsRequest;
 import com.kusitms.backend.dto.SignInRequest;
 import com.kusitms.backend.dto.TokenDto;
+import com.kusitms.backend.dto.TokenRequestDto;
 import com.kusitms.backend.repository.UserRepository;
 import com.kusitms.backend.service.IAuthService;
 import com.kusitms.backend.service.IUserService;
@@ -265,5 +266,56 @@ class AuthControllerTest {
                 )
             )
         );
+  }
+
+  @Test
+  @DisplayName("토큰 재발급")
+  void reissue() throws Exception {
+    // request body
+    TokenRequestDto request = TokenRequestDto.builder()
+        .accessToken("access-token")
+        .refreshToken("refresh-token")
+        .build();
+
+    // response body
+    TokenDto tokenDto = TokenDto.builder()
+        .grantType("bearer")
+        .accessToken("access-token")
+        .refreshToken("refresh-token")
+        .accessTokenExpireTime(30L)
+        .isInit(true)
+        .build();
+
+
+    given(authService.reissue(request)).willReturn(tokenDto);
+
+    String data = objectMapper.writeValueAsString(request);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .post("/api/auth/reissue")
+            .characterEncoding("utf-8")
+            .content(data)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("reissue", getDocumentRequest(), getDocumentResponse(),
+                requestFields(
+                    fieldWithPath("accessToken").description("access-token"),
+                    fieldWithPath("refreshToken").description("refresh-token")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data.grantType").description("승인 유형"),
+                    fieldWithPath("data.accessToken").description("AccessToken"),
+                    fieldWithPath("data.refreshToken").description("RefreshToken"),
+                    fieldWithPath("data.accessTokenExpireTime").description("AccessToken 만료시간"),
+                    fieldWithPath("data.init").description("최초 회원가입 여부")
+                )));
   }
 }
