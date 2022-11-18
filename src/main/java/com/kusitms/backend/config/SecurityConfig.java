@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/house/list",
             "/api/review/list",
             "/api/region/**",
+            "/api/s3/**",
             "/actuator/**").permitAll()
         .anyRequest().authenticated()
 
