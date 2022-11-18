@@ -59,6 +59,19 @@ include::{snippets}/check-sms/http-response.adoc[]
 ===== Response Fields
 include::{snippets}/check-sms/response-fields.adoc[]
 
+=== 2-5. 토큰 재발급
+===== Request
+include::{snippets}/reissue/http-request.adoc[]
+===== Request Example
+include::{snippets}/reissue/request-body.adoc[]
+===== Request Fields
+include::{snippets}/reissue/request-fields.adoc[]
+
+===== Response
+include::{snippets}/reissue/http-response.adoc[]
+===== Response Fields
+include::{snippets}/reissue/response-fields.adoc[]
+
 == 3. 🏡 House
 
 House는 빈 집에 대한 빈 집 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
