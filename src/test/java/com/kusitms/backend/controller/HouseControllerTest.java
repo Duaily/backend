@@ -2,7 +2,6 @@ package com.kusitms.backend.controller;
 
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentRequest;
 import static com.kusitms.backend.ApiDocumentUtils.getDocumentResponse;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -38,7 +37,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -64,8 +62,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @MockBean(JpaMetamodelMappingContext.class)
 class HouseControllerTest {
 
-  // static data
-  final String email = "test@test.com";
   @Autowired
   MockMvc mockMvc;
   @MockBean
@@ -94,6 +90,9 @@ class HouseControllerTest {
   private Authentication authentication;
   @MockBean
   private SecurityContext securityContext;
+
+  // static data
+  final String email = "test@test.com";
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -193,6 +192,7 @@ class HouseControllerTest {
         .category("MONTHLY")
         .createdDate(LocalDate.parse("2018-11-09"))
         .purpose("주말 별장")
+        .deposit("1,000,000")
         .regionId(2L)
         .build();
 
