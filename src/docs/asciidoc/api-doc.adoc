@@ -80,7 +80,6 @@ include::{snippets}/create-house-mine/response-fields.adoc[]
 === 3-2. 빈 집 게시글 작성 - 월세
 빈 집 게시글 작성 시, 카테고리가 월세인 경우에 생성 API 입니다.
 
-
 ===== Request
 include::{snippets}/create-house-monthly/http-request.adoc[]
 ===== Request Example
