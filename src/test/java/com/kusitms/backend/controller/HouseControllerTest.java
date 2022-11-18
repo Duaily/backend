@@ -108,8 +108,8 @@ class HouseControllerTest {
   }
 
   @Test
-  @DisplayName("빈 집 게시글 생성")
-  void create() throws Exception {
+  @DisplayName("빈 집 게시글 생성 - 매물")
+  void create_Mine() throws Exception {
     // request body
     final HouseDto request = HouseDto.builder()
         .title("속초 오션뷰 하우스를 소개합니다.")
@@ -120,6 +120,7 @@ class HouseControllerTest {
         .city("강원도")
         .street("속초시")
         .zipcode("12345")
+        .size("2435000000")
         .cost("150000000")
         .category("MINE")
         .createdDate(LocalDate.parse("2015-12-09"))
@@ -150,18 +151,88 @@ class HouseControllerTest {
     resultActions.andExpect(status().isOk())
         .andDo(print())
         .andDo(
-            document("create-house", getDocumentRequest(), getDocumentResponse(),
+            document("create-house-mine", getDocumentRequest(), getDocumentResponse(),
                 requestFields(
                     fieldWithPath("title").description("빈 집 게시글 제목"),
                     fieldWithPath("imageUrls").description("빈 집 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
                     fieldWithPath("city").description("도/시"),
                     fieldWithPath("street").description("도로명주소"),
                     fieldWithPath("zipcode").description("우편번호"),
-                    fieldWithPath("price").description("빈 집 가격( 정확한 금액 )"),
+                    fieldWithPath("cost").description("빈 집 가격( 정확한 금액 )"),
                     fieldWithPath("size").description("빈 집 크기"),
+                    fieldWithPath("category").description("카테고리 (매매/월세)"),
                     fieldWithPath("createdDate").description("준공연도 (yyyy-MM-dd)"),
                     fieldWithPath("purpose").description("빈 집 용도"),
-                    fieldWithPath("regionId").description("지역 ID")
+                    fieldWithPath("regionId").description("지역 ID"),
+                    fieldWithPath("deposit").description("보증금 ( -> 카테고리가 월세일 경우 )")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data").description("빈 집 게시글 ID")
+                )
+            )
+        );
+  }
+
+  @Test
+  @DisplayName("빈 집 게시글 생성 - 월세")
+  void create_Monthly() throws Exception {
+    // request body
+    final HouseDto request = HouseDto.builder()
+        .title("남해의 정겨운 숙소를 구경해보세요.")
+        .imageUrls(List.of(
+            "image1.address",
+            "image2.address",
+            "image3.address"))
+        .city("경상도")
+        .street("남해시")
+        .zipcode("54321")
+        .size("24350000124")
+        .cost("800,000")
+        .category("MONTHLY")
+        .createdDate(LocalDate.parse("2018-11-09"))
+        .purpose("주말 별장")
+        .regionId(2L)
+        .build();
+
+    final Long response = 1L;
+
+    // get user data from security context
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
+
+    given(houseService.create(email, request)).willReturn(response);
+
+    String json = objectMapper.writeValueAsString(request);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .post("/api/house")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+            .characterEncoding("utf-8")
+            .accept(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("create-house-monthly", getDocumentRequest(), getDocumentResponse(),
+                requestFields(
+                    fieldWithPath("title").description("빈 집 게시글 제목"),
+                    fieldWithPath("imageUrls").description("빈 집 게시글 첨부 사진 주소 리스트 ( 최대 5장 )"),
+                    fieldWithPath("city").description("도/시"),
+                    fieldWithPath("street").description("도로명주소"),
+                    fieldWithPath("zipcode").description("우편번호"),
+                    fieldWithPath("cost").description("빈 집 가격 혹은 월세 ( 정확한 금액 )"),
+                    fieldWithPath("size").description("빈 집 크기"),
+                    fieldWithPath("category").description("카테고리 (매매/월세)"),
+                    fieldWithPath("createdDate").description("준공연도 (yyyy-MM-dd)"),
+                    fieldWithPath("purpose").description("빈 집 용도"),
+                    fieldWithPath("regionId").description("지역 ID"),
+                    fieldWithPath("deposit").description("보증금 ( -> 카테고리가 월세일 경우 )")
                 ),
                 responseFields(
                     fieldWithPath("status").description("결과 코드"),
@@ -269,6 +340,8 @@ class HouseControllerTest {
         .minPrice(100000000)
         .maxPrice(200000000)
         .location("강원도 속초시")
+        .cost("15000000")
+        .deposit("50000000")
         .build();
     final HousePreviewDto house2 = HousePreviewDto.builder()
         .postId(2L)
@@ -278,6 +351,8 @@ class HouseControllerTest {
         .minPrice(400000000)
         .maxPrice(500000000)
         .location("제주도 서귀포시")
+        .cost("15000000")
+        .deposit("50000000")
         .build();
     final HousePreviewDto house3 = HousePreviewDto.builder()
         .postId(3L)
@@ -287,6 +362,8 @@ class HouseControllerTest {
         .minPrice(300000000)
         .maxPrice(400000000)
         .location("전라도 전주시")
+        .cost("15000000")
+        .deposit("50000000")
         .build();
     response.add(house1);
     response.add(house2);
@@ -314,7 +391,13 @@ class HouseControllerTest {
                     fieldWithPath("data.[].imageUrl").description("대표 이미지 url"),
                     fieldWithPath("data.[].minPrice").description("최소 가격"),
                     fieldWithPath("data.[].maxPrice").description("최대 가격"),
-                    fieldWithPath("data.[].author").description("작성자 닉네임")
+                    fieldWithPath("data.[].author").description("작성자 닉네임"),
+                    fieldWithPath("data.[].cost").description("정확한 가격 ( 매매인 경우, 매매가 월세인 경우, 월세"),
+                    fieldWithPath("data.[].deposit").description("월세인 경우, 보증금"),
+                    fieldWithPath("pageInfo.page").description("현재 페이지 번호"),
+                    fieldWithPath("pageInfo.size").description("한 페이지에 노출되는 데이터 개수"),
+                    fieldWithPath("pageInfo.totalElements").description("총 데이터 개수"),
+                    fieldWithPath("pageInfo.totalPages").description("총 페이지 수")
                 ))
         );
 
