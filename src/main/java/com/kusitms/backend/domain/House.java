@@ -50,7 +50,7 @@ public class House extends MetaEntity {
   @JoinColumn(name = "owner_id")
   private User owner;
 
-  public static House createHouse(HouseDto request, User user) {
+  public static House createHouse(HouseDto.Request request, User user) {
     return House.builder()
         .address(Address.builder()
             .city(request.getCity())

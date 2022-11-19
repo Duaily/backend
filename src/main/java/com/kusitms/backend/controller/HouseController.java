@@ -48,7 +48,7 @@ public class HouseController {
   }
 
   @PostMapping
-  public ResponseEntity<BaseResponse> create(@RequestBody HouseDto request) {
+  public ResponseEntity<BaseResponse> create(@RequestBody HouseDto.Request request) {
 
     Long response = houseService.create(SecurityUtil.getCurrentUserId(), request);
     return ResponseEntity.ok(BaseResponse.builder()
@@ -73,7 +73,7 @@ public class HouseController {
 
   @GetMapping("/{houseId}")
   public ResponseEntity<BaseResponse> getDetail(@PathVariable Long houseId) {
-    HousePost response = houseService.getDetail(houseId);
+    HouseDto.Response response = houseService.getDetail(houseId);
     return ResponseEntity.ok(BaseResponse.builder()
         .data(response).message("상세 조회 성공").build());
   }
