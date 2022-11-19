@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface IHouseService {
 
-  Long create(String email, HouseDto dto);
+  Long create(String email, HouseDto.Request dto);
 
   Long createDeal(DealDto.Request request, String email);
 

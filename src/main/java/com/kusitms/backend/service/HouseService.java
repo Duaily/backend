@@ -39,7 +39,7 @@ public class HouseService implements IHouseService {
   private final HousePostRepository housePostRepository;
 
   @Transactional
-  public Long create(String email, HouseDto request) {
+  public Long create(String email, HouseDto.Request request) {
     // 현재 사용자 조회
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));

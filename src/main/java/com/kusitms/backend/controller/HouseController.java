@@ -48,7 +48,7 @@ public class HouseController {
   }
 
   @PostMapping
-  public ResponseEntity<BaseResponse> create(@RequestBody HouseDto request) {
+  public ResponseEntity<BaseResponse> create(@RequestBody HouseDto.Request request) {
 
     Long response = houseService.create(SecurityUtil.getCurrentUserId(), request);
     return ResponseEntity.ok(BaseResponse.builder()

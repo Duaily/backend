@@ -110,7 +110,7 @@ class HouseControllerTest {
   @DisplayName("빈 집 게시글 생성 - 매물")
   void create_Mine() throws Exception {
     // request body
-    final HouseDto request = HouseDto.builder()
+    final HouseDto.Request request = HouseDto.Request.builder()
         .title("속초 오션뷰 하우스를 소개합니다.")
         .imageUrls(List.of(
             "image1.address",
@@ -178,7 +178,7 @@ class HouseControllerTest {
   @DisplayName("빈 집 게시글 생성 - 월세")
   void create_Monthly() throws Exception {
     // request body
-    final HouseDto request = HouseDto.builder()
+    final HouseDto.Request request = HouseDto.Request.builder()
         .title("남해의 정겨운 숙소를 구경해보세요.")
         .imageUrls(List.of(
             "image1.address",
