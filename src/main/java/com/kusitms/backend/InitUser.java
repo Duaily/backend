@@ -18,7 +18,7 @@ public class InitUser {
   private final InitUserService initUserService;
   private final InitRegionService initRegionService;
 
-  @PostConstruct
+  //@PostConstruct
   public void init() {
     initUserService.init();
     initRegionService.init();
