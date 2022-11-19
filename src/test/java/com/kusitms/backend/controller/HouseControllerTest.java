@@ -339,6 +339,8 @@ class HouseControllerTest {
         .author("Dual ( 작성자 닉네임 )")
         .minPrice(100000000)
         .maxPrice(200000000)
+        .deposit("null")
+        .cost("null")
         .location("강원도 속초시")
         .cost("15000000")
         .deposit("50000000")
@@ -348,8 +350,10 @@ class HouseControllerTest {
         .title("제주의 자연을 느끼며 .... ")
         .imageUrl("image address")
         .author("농부 ( 작성자 닉네임 )")
-        .minPrice(400000000)
-        .maxPrice(500000000)
+        .deposit("2000")
+        .cost("50")
+        .minPrice(0)
+        .maxPrice(0)
         .location("제주도 서귀포시")
         .cost("15000000")
         .deposit("50000000")
@@ -361,6 +365,8 @@ class HouseControllerTest {
         .author("국수조아 ( 작성자 닉네임 )")
         .minPrice(300000000)
         .maxPrice(400000000)
+        .deposit("null")
+        .cost("null")
         .location("전라도 전주시")
         .cost("15000000")
         .deposit("50000000")
@@ -389,13 +395,13 @@ class HouseControllerTest {
                     fieldWithPath("data.[].title").description("게시글 제목"),
                     fieldWithPath("data.[].location").description("빈 집 주소"),
                     fieldWithPath("data.[].imageUrl").description("대표 이미지 url"),
-                    fieldWithPath("data.[].minPrice").description("최소 가격"),
-                    fieldWithPath("data.[].maxPrice").description("최대 가격"),
+                    fieldWithPath("data.[].minPrice").description("최소 가격 (매매일 경우)"),
+                    fieldWithPath("data.[].maxPrice").description("최대 가격 (매매일 경우)"),
+                    fieldWithPath("data.[].deposit").description("보증금 (월세일 경우)"),
+                    fieldWithPath("data.[].cost").description("월세 (월세일 경우)"),
                     fieldWithPath("data.[].author").description("작성자 닉네임"),
-                    fieldWithPath("data.[].cost").description("정확한 가격 ( 매매인 경우, 매매가 월세인 경우, 월세"),
-                    fieldWithPath("data.[].deposit").description("월세인 경우, 보증금"),
-                    fieldWithPath("pageInfo.page").description("현재 페이지 번호"),
-                    fieldWithPath("pageInfo.size").description("한 페이지에 노출되는 데이터 개수"),
+                    fieldWithPath("pageInfo.page").description("현재 페이지"),
+                    fieldWithPath("pageInfo.size").description("페이지 당 데이터 개수"),
                     fieldWithPath("pageInfo.totalElements").description("총 데이터 개수"),
                     fieldWithPath("pageInfo.totalPages").description("총 페이지 수")
                 ))
