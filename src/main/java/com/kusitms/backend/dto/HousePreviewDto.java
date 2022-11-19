@@ -1,6 +1,7 @@
 package com.kusitms.backend.dto;
 
 import com.kusitms.backend.domain.Address;
+import com.kusitms.backend.domain.Category;
 import com.kusitms.backend.domain.HousePost;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class HousePreviewDto {
         .author(housePost.getUser().getNickname())
         .build();
 
-    if (housePost.getHouse().getPrice().getCategory().toString().equals("MINE")) {
+    if (housePost.getHouse().getPrice().getCategory() == Category.MINE) {
       String origin = housePost.getHouse().getPrice().getCost();
       String start = origin.split("")[0];
       int length = origin.length();
