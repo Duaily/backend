@@ -59,23 +59,52 @@ include::{snippets}/check-sms/http-response.adoc[]
 ===== Response Fields
 include::{snippets}/check-sms/response-fields.adoc[]
 
+=== 2-5. 토큰 재발급
+===== Request
+include::{snippets}/reissue/http-request.adoc[]
+===== Request Example
+include::{snippets}/reissue/request-body.adoc[]
+===== Request Fields
+include::{snippets}/reissue/request-fields.adoc[]
+
+===== Response
+include::{snippets}/reissue/http-response.adoc[]
+===== Response Fields
+include::{snippets}/reissue/response-fields.adoc[]
+
 == 3. 🏡 House
 
 House는 빈 집에 대한 빈 집 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
 
-=== 3-1. 빈 집 게시글 작성
-===== Request
-include::{snippets}/create-house/http-request.adoc[]
-===== Request Example
-include::{snippets}/create-house/request-body.adoc[]
-===== Request Fields
-include::{snippets}/create-house/request-fields.adoc[]
-===== Response
-include::{snippets}/create-house/http-response.adoc[]
-===== Response Fields
-include::{snippets}/create-house/response-fields.adoc[]
+=== 3-1. 빈 집 게시글 작성 - 매매
+빈 집 게시글 작성 시, 카테고리가 매매인 경우에 생성 API 입니다.
 
-=== 3.2 빈 집 게시글 목록 조회 ( 페이징 )
+===== Request
+include::{snippets}/create-house-mine/http-request.adoc[]
+===== Request Example
+include::{snippets}/create-house-mine/request-body.adoc[]
+===== Request Fields
+include::{snippets}/create-house-mine/request-fields.adoc[]
+===== Response
+include::{snippets}/create-house-mine/http-response.adoc[]
+===== Response Fields
+include::{snippets}/create-house-mine/response-fields.adoc[]
+
+=== 3-2. 빈 집 게시글 작성 - 월세
+빈 집 게시글 작성 시, 카테고리가 월세인 경우에 생성 API 입니다.
+
+===== Request
+include::{snippets}/create-house-monthly/http-request.adoc[]
+===== Request Example
+include::{snippets}/create-house-monthly/request-body.adoc[]
+===== Request Fields
+include::{snippets}/create-house-monthly/request-fields.adoc[]
+===== Response
+include::{snippets}/create-house-monthly/http-response.adoc[]
+===== Response Fields
+include::{snippets}/create-house-monthly/response-fields.adoc[]
+
+=== 3-3. 빈 집 게시글 목록 조회 ( 페이징 )
 ===== Request
 include::{snippets}/house-list/http-request.adoc[]
 ===== Request Example
@@ -137,7 +166,7 @@ include::{snippets}/create-deal/http-response.adoc[]
 ===== Response Example
 include::{snippets}/create-deal/response-fields.adoc[]
 
-=== 6.2 거래 완료
+=== 6-2 거래 완료
 ===== Request
 include::{snippets}/modify-deal/http-request.adoc[]
 ===== Request Example
@@ -148,11 +177,11 @@ include::{snippets}/modify-deal/http-response.adoc[]
 include::{snippets}/modify-deal/response-fields.adoc[]
 
 
-== 6. 📝 Review Post
+== 7. 📝 Review Post
 
 Review Post는 후기 게시글에 대한 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
 
-=== 6.1 후기 게시글 생성
+=== 7-1. 후기 게시글 생성
 ===== Request
 include::{snippets}/create-review/http-request.adoc[]
 ===== Request Example
@@ -164,7 +193,7 @@ include::{snippets}/create-review/http-response.adoc[]
 ===== Response Example
 include::{snippets}/create-review/response-fields.adoc[]
 
-=== 6.2 후기 게시글 상세 조회
+=== 7-2. 후기 게시글 상세 조회
 ===== Request
 include::{snippets}/review-detail/http-request.adoc[]
 ===== Request Example
@@ -174,7 +203,7 @@ include::{snippets}/review-detail/http-response.adoc[]
 ===== Response Example
 include::{snippets}/review-detail/response-fields.adoc[]
 
-=== 6.3 후기 게시글 목록 조회 ( 페이징 )
+=== 7-3. 후기 게시글 목록 조회 ( 페이징 )
 ===== Request
 include::{snippets}/review-list/http-request.adoc[]
 ===== Request Example
