@@ -73,7 +73,7 @@ public class HouseController {
 
   @GetMapping("/{houseId}")
   public ResponseEntity<BaseResponse> getDetail(@PathVariable Long houseId) {
-    HousePost response = houseService.getDetail(houseId);
+    HouseDto.Response response = houseService.getDetail(houseId);
     return ResponseEntity.ok(BaseResponse.builder()
         .data(response).message("상세 조회 성공").build());
   }

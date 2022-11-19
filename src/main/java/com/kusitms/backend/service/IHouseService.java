@@ -15,7 +15,7 @@ public interface IHouseService {
 
   Long modifyDeal(Long dealId, String email);
 
-  HousePost getDetail(Long houseId);
+  HouseDto.Response getDetail(Long houseId);
 
   List<HousePreviewDto> getHousePostList(Pageable page);
 

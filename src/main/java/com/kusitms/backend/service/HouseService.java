@@ -3,10 +3,12 @@ package com.kusitms.backend.service;
 import com.kusitms.backend.domain.Deal;
 import com.kusitms.backend.domain.House;
 import com.kusitms.backend.domain.HousePost;
+import com.kusitms.backend.domain.ImageFile;
 import com.kusitms.backend.domain.Region;
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
+import com.kusitms.backend.dto.HouseDto.Response;
 import com.kusitms.backend.dto.HousePreviewDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
@@ -16,6 +18,7 @@ import com.kusitms.backend.repository.HouseRepository;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.RegionRepository;
 import com.kusitms.backend.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -120,12 +123,42 @@ public class HouseService implements IHouseService {
   }
 
   @Transactional
-  public HousePost getDetail(Long houseId) {
-
+  public HouseDto.Response getDetail(Long houseId) {
     HousePost housePost = (HousePost) postRepository.findById(houseId)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.NOT_FOUND_EXCEPTION));
 
-    return housePost;
+    boolean isCompleted = dealRepository.existsByHousePost(housePost);
+
+    Response houseDtoBuild = Response.builder()
+        .title(housePost.getTitle())
+        .location(housePost.getHouse().getAddress().getCity() + " "
+            + housePost.getHouse().getAddress().getStreet())
+        .imageUrls(housePost.getHouse().getImageFileSet().stream()
+            .map(imageFile -> (String) imageFile.getImageUrl()).collect(Collectors.toList()))
+        .size(housePost.getHouse().getSize())
+        .purpose(housePost.getHouse().getPurpose())
+        .author(housePost.getUser().getNickname())
+        .contact(housePost.getUser().getContact())
+        .isPossible(isCompleted)
+        .build();
+
+    if (housePost.getHouse().getPrice().getCategory().toString().equals("MINE")) {
+      String origin = housePost.getHouse().getPrice().getCost();
+      String start = origin.split("")[0];
+      int length = origin.length();
+      StringBuilder min = new StringBuilder(start);
+      StringBuilder max = new StringBuilder(String.valueOf(Integer.parseInt(start) + 1));
+      for (int i = 0; i < length - 1; i++) {
+        min.append('0');
+        max.append('0');
+      }
+      houseDtoBuild.setMinPrice(Integer.parseInt(min.toString()));
+      houseDtoBuild.setMaxPrice(Integer.parseInt(max.toString()));
+    } else {
+      houseDtoBuild.setCost(housePost.getHouse().getPrice().getCost());
+      houseDtoBuild.setDeposit(housePost.getHouse().getPrice().getDeposit());
+    }
+    return houseDtoBuild;
   }
 
   @Transactional
