@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 public class TokenProvider {
 
   private static final String AUTHORITIES_KEY = "auth";
-  private static final String BEARER_TYPE = "bearer";
+  private static final String BEARER_TYPE = "Bearer";
 
   @Value("${spring.jwt.access-token}")
   private long accessTokenExpireTime;
