@@ -4,7 +4,9 @@ import com.kusitms.backend.domain.HousePost;
 import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.dto.HousePreviewDto;
+import com.kusitms.backend.response.PageResponse;
 import java.util.List;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 public interface IHouseService {
@@ -20,4 +22,6 @@ public interface IHouseService {
   List<HousePreviewDto> getHousePostList(Pageable page);
 
   int getHousePostCount();
+
+  PageResponse getMineList(String email, Pageable page);
 }

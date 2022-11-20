@@ -1,5 +1,6 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.domain.Category;
 import com.kusitms.backend.domain.Deal;
 import com.kusitms.backend.domain.House;
 import com.kusitms.backend.domain.HousePost;
@@ -18,6 +19,8 @@ import com.kusitms.backend.repository.HouseRepository;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.RegionRepository;
 import com.kusitms.backend.repository.UserRepository;
+import com.kusitms.backend.response.PageInfo;
+import com.kusitms.backend.response.PageResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -142,7 +145,7 @@ public class HouseService implements IHouseService {
         .isPossible(isCompleted)
         .build();
 
-    if (housePost.getHouse().getPrice().getCategory().toString().equals("MINE")) {
+    if (housePost.getHouse().getPrice().getCategory() == Category.MINE) {
       String origin = housePost.getHouse().getPrice().getCost();
       String start = origin.split("")[0];
       int length = origin.length();
@@ -170,6 +173,32 @@ public class HouseService implements IHouseService {
   // 빈 집 게시글의 총 개수 반환
   public int getHousePostCount() {
     return housePostRepository.findAll().size();
+  }
+
+  @Transactional
+  public PageResponse getMineList(String email, Pageable page) {
+    // (1) 사용자 조회
+    User writer = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND_EXCEPTION));
+
+    // (2) 본인이 작성한 빈 집 게시글 리스트 조회
+    Page<HousePost> list = housePostRepository.findByUser(page, writer);
+
+    // (3) 응답 형식 변환
+    List<HousePreviewDto> contents = list.getContent().stream()
+        .map(HousePreviewDto::toDto)
+        .collect(Collectors.toList());
+
+    // (4) 페이징 응답 형식 지정
+    return PageResponse.builder()
+        .pageInfo(PageInfo.builder()
+            .size(page.getPageSize())
+            .page(page.getPageNumber() + 1)
+            .totalElements((int) list.getTotalElements())
+            .totalPages(list.getTotalPages())
+            .build()
+        ).data(contents)
+        .build();
   }
 
 }
