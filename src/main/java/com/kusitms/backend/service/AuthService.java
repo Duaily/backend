@@ -103,23 +103,28 @@ public class AuthService implements IAuthService {
 
   @Transactional
   public TokenDto reissue(TokenRequestDto request) {
-
-    if (!tokenProvider.validateToken(request.getAccessToken())) {
-      throw new ApiException(ApiExceptionEnum.TOKEN_DISCREPANCY_EXCEPTION);
-    }
-
-    Authentication authentication = tokenProvider.getAuthentication(request.getAccessToken());
-
-    String refreshToken = Optional.ofNullable(
-            redisClient.getValue(authentication.getName()))
-        .orElseThrow(() -> new ApiException(ApiExceptionEnum.TOKEN_EXPIRE_TIME_OUT_EXCEPTION));
-
-    if (!refreshToken.equals(request.getRefreshToken())) {
+    // (1) Refresh Token 유효성 검사
+    if (!tokenProvider.validateToken(request.getRefreshToken())) {
       throw new ApiException(ApiExceptionEnum.REFRESHTOKEN_DISCREPANCY_EXCEPTION);
     }
 
+    // (2) Refresh Token 으로부터 사용자 정보 조회
+    Authentication authentication = tokenProvider.getAuthentication(request.getRefreshToken());
+
+    // (3) Redis 에 저장된 Refresh Token 조회
+    String refreshFromRedis = Optional.ofNullable(
+            redisClient.getValue(authentication.getName()))
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.TOKEN_EXPIRE_TIME_OUT_EXCEPTION));
+
+    // (4) Refresh Token 비교
+    if (!refreshFromRedis.equals(request.getRefreshToken())) {
+      throw new ApiException(ApiExceptionEnum.REFRESHTOKEN_DISCREPANCY_EXCEPTION);
+    }
+
+    // (5) Access Token & Refresh Token 재발급
     TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
+    // (6) Refresh Token 레디스에 저장
     redisClient.setValue(authentication.getName(), tokenDto.getRefreshToken(),
         tokenProvider.getRefreshTokenExpireTime());
 
