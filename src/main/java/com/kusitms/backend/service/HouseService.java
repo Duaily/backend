@@ -11,7 +11,6 @@ import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.dto.HouseDto.Response;
 import com.kusitms.backend.dto.HousePreviewDto;
-import com.kusitms.backend.dto.UserDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.DealRepository;
