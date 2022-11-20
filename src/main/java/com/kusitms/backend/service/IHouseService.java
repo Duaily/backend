@@ -25,6 +25,4 @@ public interface IHouseService {
   int getHousePostCount();
 
   PageResponse getMineList(String email, Pageable page);
-
-  UserDto getUserInfo(String email);
 }

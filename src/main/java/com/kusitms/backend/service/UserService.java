@@ -2,6 +2,7 @@ package com.kusitms.backend.service;
 
 import com.kusitms.backend.domain.User;
 import com.kusitms.backend.dto.CheckSmsRequest;
+import com.kusitms.backend.dto.UserDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.UserRepository;
@@ -57,5 +58,15 @@ public class UserService implements IUserService {
     user.setContact(request.getContact());
 
     userRepository.save(user);
+  }
+
+  public UserDto getUserInfo(String email) {
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND_EXCEPTION));
+
+    return UserDto.builder()
+        .email(user.getEmail())
+        .nickname(user.getNickname())
+        .contact(user.getContact()).build();
   }
 }

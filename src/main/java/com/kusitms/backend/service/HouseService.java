@@ -176,16 +176,6 @@ public class HouseService implements IHouseService {
     return housePostRepository.findAll().size();
   }
 
-  public UserDto getUserInfo(String email) {
-    User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND_EXCEPTION));
-
-    return UserDto.builder()
-        .email(user.getEmail())
-        .nickname(user.getNickname())
-        .contact(user.getContact()).build();
-  }
-
   @Transactional
   public PageResponse getMineList(String email, Pageable page) {
     // (1) 사용자 조회
