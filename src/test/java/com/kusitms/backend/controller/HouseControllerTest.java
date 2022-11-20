@@ -29,6 +29,8 @@ import com.kusitms.backend.repository.HouseRepository;
 import com.kusitms.backend.repository.PostRepository;
 import com.kusitms.backend.repository.RegionRepository;
 import com.kusitms.backend.repository.UserRepository;
+import com.kusitms.backend.response.PageInfo;
+import com.kusitms.backend.response.PageResponse;
 import com.kusitms.backend.service.IHouseService;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -342,8 +344,6 @@ class HouseControllerTest {
         .deposit("null")
         .cost("null")
         .location("강원도 속초시")
-        .cost("15000000")
-        .deposit("50000000")
         .build();
     final HousePreviewDto house2 = HousePreviewDto.builder()
         .postId(2L)
@@ -355,8 +355,6 @@ class HouseControllerTest {
         .minPrice(0)
         .maxPrice(0)
         .location("제주도 서귀포시")
-        .cost("15000000")
-        .deposit("50000000")
         .build();
     final HousePreviewDto house3 = HousePreviewDto.builder()
         .postId(3L)
@@ -368,8 +366,6 @@ class HouseControllerTest {
         .deposit("null")
         .cost("null")
         .location("전라도 전주시")
-        .cost("15000000")
-        .deposit("50000000")
         .build();
     response.add(house1);
     response.add(house2);
@@ -407,5 +403,103 @@ class HouseControllerTest {
                 ))
         );
 
+  }
+
+  @Test
+  @DisplayName("내가 작성한 빈 집 게시글 목록 조회")
+  void getHousePostByMine() throws Exception {
+    // request param
+    final int page = 1;
+
+    // response
+    final List<HousePreviewDto> list = new ArrayList<>();
+    final HousePreviewDto house1 = HousePreviewDto.builder()
+        .postId(1L)
+        .title("어서오세요. 이곳은 전경이 아름다운 속초 앞바다 빈 집 입니다.")
+        .imageUrl("image address")
+        .author("Dual ( 작성자 닉네임 )")
+        .minPrice(100000000)
+        .maxPrice(200000000)
+        .deposit("null")
+        .cost("null")
+        .location("강원도 속초시")
+        .build();
+    final HousePreviewDto house2 = HousePreviewDto.builder()
+        .postId(2L)
+        .title("제주의 자연을 느끼며 .... ")
+        .imageUrl("image address")
+        .author("Dual ( 작성자 닉네임 )")
+        .deposit("2000")
+        .cost("50")
+        .minPrice(0)
+        .maxPrice(0)
+        .location("제주도 서귀포시")
+        .cost("15000000")
+        .deposit("50000000")
+        .build();
+    final HousePreviewDto house3 = HousePreviewDto.builder()
+        .postId(3L)
+        .title("전주의 먹거리를 집 앞에서 ..!! ")
+        .imageUrl("image address")
+        .author("Dual ( 작성자 닉네임 )")
+        .minPrice(300000000)
+        .maxPrice(400000000)
+        .deposit("null")
+        .cost("null")
+        .location("전라도 전주시")
+        .build();
+
+    list.add(house1);
+    list.add(house2);
+    list.add(house3);
+
+    final PageResponse response = PageResponse.builder()
+        .pageInfo(PageInfo
+            .builder()
+            .page(page)
+            .totalPages((list.size() / 8) + 1)
+            .totalElements(list.size())
+            .size(8)
+            .build())
+        .data(list)
+        .build();
+
+    // get user data from security context
+    when(securityContext.getAuthentication()).thenReturn(authentication);
+    SecurityContextHolder.setContext(securityContext);
+    when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(email);
+
+    // given
+    given(houseService.getMineList(email, PageRequest.of(page - 1, 8))).willReturn(response);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .get("/api/house/mine?page={page}", page)
+    );
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("house-list-mine", getDocumentRequest(), getDocumentResponse(),
+                requestParameters(
+                    parameterWithName("page").description("페이지 번호")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data.[].postId").description("빈 집 게시글 ID"),
+                    fieldWithPath("data.[].title").description("게시글 제목"),
+                    fieldWithPath("data.[].location").description("빈 집 주소"),
+                    fieldWithPath("data.[].imageUrl").description("대표 이미지 url"),
+                    fieldWithPath("data.[].minPrice").description("최소 가격 (매매일 경우)"),
+                    fieldWithPath("data.[].maxPrice").description("최대 가격 (매매일 경우)"),
+                    fieldWithPath("data.[].deposit").description("보증금 (월세일 경우)"),
+                    fieldWithPath("data.[].cost").description("월세 (월세일 경우)"),
+                    fieldWithPath("data.[].author").description("작성자 닉네임"),
+                    fieldWithPath("pageInfo.page").description("현재 페이지"),
+                    fieldWithPath("pageInfo.size").description("페이지 당 데이터 개수"),
+                    fieldWithPath("pageInfo.totalElements").description("총 데이터 개수"),
+                    fieldWithPath("pageInfo.totalPages").description("총 페이지 수")
+                ))
+        );
   }
 }
