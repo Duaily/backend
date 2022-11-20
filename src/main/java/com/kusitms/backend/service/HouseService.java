@@ -1,5 +1,6 @@
 package com.kusitms.backend.service;
 
+import com.kusitms.backend.domain.Category;
 import com.kusitms.backend.domain.Deal;
 import com.kusitms.backend.domain.House;
 import com.kusitms.backend.domain.HousePost;
@@ -142,7 +143,7 @@ public class HouseService implements IHouseService {
         .isPossible(isCompleted)
         .build();
 
-    if (housePost.getHouse().getPrice().getCategory().toString().equals("MINE")) {
+    if (housePost.getHouse().getPrice().getCategory() == Category.MINE) {
       String origin = housePost.getHouse().getPrice().getCost();
       String start = origin.split("")[0];
       int length = origin.length();
