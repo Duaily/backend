@@ -277,3 +277,16 @@ include::{snippets}/review-list/http-response.adoc[]
 include::{snippets}/review-list/response-body.adoc[]
 ===== Response Fields
 include::{snippets}/review-list/response-fields.adoc[]
+
+== 8. 🧑 User
+User는 사용자 관련 API입니다.
+
+=== 8-1. 사용자 정보 조회
+Access token을 받아 사용자의 정보(이메일, 닉네임, 전화번호)를 반환합니다.
+
+===== Response
+include::{snippets}/user-info/http-response.adoc[]
+===== Response Example
+include::{snippets}/user-info/response-body.adoc[]
+===== Response Fields
+include::{snippets}/user-info/response-fields.adoc[]
