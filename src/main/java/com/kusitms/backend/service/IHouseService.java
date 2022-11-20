@@ -4,7 +4,6 @@ import com.kusitms.backend.domain.HousePost;
 import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.dto.HousePreviewDto;
-import com.kusitms.backend.dto.UserDto;
 import com.kusitms.backend.response.PageResponse;
 import java.util.List;
 import org.springframework.data.domain.PageRequest;
