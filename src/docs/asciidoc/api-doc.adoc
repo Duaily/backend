@@ -13,8 +13,11 @@
 == 2. 👦🏻 Auth
 
 Auth는 로그인, 회원가입, 토큰 재발급, 전화번호 인증 등의 API를 담당합니다.
+_해당 도메인의 URL로 요청 시, 토큰 검증을 거치지 않습니다._
 
 === 2-1. 로컬 로그인
+로컬 로그인은 QA 환경을 위해서만 사용됩니다.
+
 ===== Request
 include::{snippets}/sign-in/http-request.adoc[]
 ===== Request Example
@@ -27,6 +30,8 @@ include::{snippets}/sign-in/response-fields.adoc[]
 
 
 === 2-2. 로컬 회원가입
+로컬 회원가입은 QA 환경을 위해서만 사용됩니다.
+
 ===== Request
 include::{snippets}/sign-up/http-request.adoc[]
 ===== Request Example
@@ -38,6 +43,8 @@ include::{snippets}/sign-up/http-response.adoc[]
 include::{snippets}/sign-up/response-fields.adoc[]
 
 === 2-3. 전화번호 인증 코드 전송
+매물 거래를 위해서 전화번호 인증 절차가 필요하며 이에 따른 인증 코드 전송 API 입니다.
+
 ===== Request
 include::{snippets}/send-sms/http-request.adoc[]
 ===== Request Params
@@ -49,6 +56,8 @@ include::{snippets}/send-sms/http-response.adoc[]
 include::{snippets}/send-sms/response-fields.adoc[]
 
 === 2-4. 전화번호 인증 코드 검증
+매물 거래를 위해서는 전화번호 인증 절차가 필요하며 이에 따른 인증 코드 검증 API 입니다.
+
 ===== Request
 include::{snippets}/check-sms/http-request.adoc[]
 ===== Request Example
@@ -60,6 +69,8 @@ include::{snippets}/check-sms/http-response.adoc[]
 include::{snippets}/check-sms/response-fields.adoc[]
 
 === 2-5. 토큰 재발급
+소셜 로그인 이후, AT와 RT가 발급됩니다. AT의 만료시간에 따른 재발급을 위해서 사용되는 API 입니다.
+
 ===== Request
 include::{snippets}/reissue/http-request.adoc[]
 ===== Request Example
@@ -78,6 +89,7 @@ House는 빈 집에 대한 빈 집 게시글 작성, 상세 조회, 전체 조�
 
 === 3-1. 빈 집 게시글 작성 - 매매
 빈 집 게시글 작성 시, 카테고리가 매매인 경우에 생성 API 입니다.
+빈 집 게시글 작성 시, region에는 미리 DB에 저장된 ( 남해, 속초, 제주 )에 한해서만 가능합니다.
 
 ===== Request
 include::{snippets}/create-house-mine/http-request.adoc[]
@@ -92,6 +104,7 @@ include::{snippets}/create-house-mine/response-fields.adoc[]
 
 === 3-2. 빈 집 게시글 작성 - 월세
 빈 집 게시글 작성 시, 카테고리가 월세인 경우에 생성 API 입니다.
+빈 집 게시글 작성 시, region에는 미리 DB에 저장된 ( 남해, 속초, 제주 )에 한해서만 가능합니다.
 
 ===== Request
 include::{snippets}/create-house-monthly/http-request.adoc[]
@@ -105,6 +118,16 @@ include::{snippets}/create-house-monthly/http-response.adoc[]
 include::{snippets}/create-house-monthly/response-fields.adoc[]
 
 === 3-3. 빈 집 게시글 목록 조회 ( 페이징 )
+빈 집 게시글 목록 조회는 토큰 검증을 거치지 않으며, 페이징 처리를 하기 때문에 page 번호를 파라미터로 넘겨주어야 합니다.
+
+- 매매인 경우
+
+매매 가격에 대한 금액대가 ( minPrice, maxPrice )로 제공됩니다.
+
+- 월세인 경우
+
+보증금과 월세 가격이 ( deposit, cost )로 제공됩니다.
+
 ===== Request
 include::{snippets}/house-list/http-request.adoc[]
 ===== Request Example
@@ -117,11 +140,38 @@ include::{snippets}/house-list/response-body.adoc[]
 ===== Response Fields
 include::{snippets}/house-list/response-fields.adoc[]
 
+=== 3-4. 본인이 작성한 빈 집 게시글 목록 조회 ( 페이징 )
+본인이 작성한 빈 집 게시글 목록 조회에서는 사용자 정보를 통해 필터링을 하기 때문에, 토큰 검증이 이루어집니다.
+또한, 페이징 처리를 하기 때문에 page 번호를 파라미터로 넘겨주어야 합니다.
+_테스트에 사용된 사용자의 닉네임은 모두 `Dual` 입니다._
+
+- 매매인 경우
+
+매매 가격에 대한 금액대가 ( minPrice, maxPrice )로 제공됩니다.
+
+- 월세인 경우
+
+보증금과 월세 가격이 ( deposit, cost )로 제공됩니다.
+
+===== Request
+include::{snippets}/house-list-mine/http-request.adoc[]
+===== Request Example
+include::{snippets}/house-list-mine/request-parameters.adoc[]
+
+===== Response
+include::{snippets}/house-list-mine/http-response.adoc[]
+===== Response Example
+include::{snippets}/house-list-mine/response-body.adoc[]
+===== Response Fields
+include::{snippets}/house-list-mine/response-fields.adoc[]
+
 == 4. 🏕 Region
 
 Region은 지역에 대한 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
 
 === 4-1. 지역 게시글 작성
+밋업데이 기준, MVP 에서 제외된 API입니다.
+
 ===== Request
 include::{snippets}/create/http-request.adoc[]
 ===== Request Example
@@ -136,8 +186,12 @@ include::{snippets}/create/response-fields.adoc[]
 == 5. 🪣 AWS S3
 
 s3는 이미지에 관한 업로드와 삭제를 담당합니다.
+해당 URL로 접근 시, 토큰 검증을 거치지 않습니다.
 
 === 5-1. 이미지 업로드
+S3로 이미지를 업로드 하는 API 입니다.
+*스토리지 내에 저장되는 점을 고려하여 사용자가 등록하지 않는 이미지에 대해서는 삭제가 필요합니다.*
+
 ===== Request
 include::{snippets}/aws-s3-upload/http-request.adoc[]
 
@@ -158,7 +212,11 @@ include::{snippets}/aws-s3-delete/http-response.adoc[]
 include::{snippets}/aws-s3-delete/response-fields.adoc[]
 
 == 6. 🫱🏻‍🫲🏼 Deal
+Deal은 빈 집 매물 거래에 대한 API 입니다.
+
 === 6-1. 거래 생성
+빈 집 거래 시, 사용자는 본인의 빈 집에 대해서 거래를 생성할 수 없습니다.
+
 ===== Request
 include::{snippets}/create-deal/http-request.adoc[]
 ===== Response
@@ -167,6 +225,8 @@ include::{snippets}/create-deal/http-response.adoc[]
 include::{snippets}/create-deal/response-fields.adoc[]
 
 === 6-2 거래 완료
+*빈 집 거래 완료 시, 빈 집의 소유자만이 거래 완료를 처리할 수 있습니다.*
+
 ===== Request
 include::{snippets}/modify-deal/http-request.adoc[]
 ===== Request Example
@@ -204,6 +264,8 @@ include::{snippets}/review-detail/http-response.adoc[]
 include::{snippets}/review-detail/response-fields.adoc[]
 
 === 7-3. 후기 게시글 목록 조회 ( 페이징 )
+후기 게시글 목록 조회는 토큰 검증을 거치지 않으며, 페이징 처리를 하기 때문에 page 번호를 파라미터로 넘겨주어야 합니다.
+
 ===== Request
 include::{snippets}/review-list/http-request.adoc[]
 ===== Request Example
