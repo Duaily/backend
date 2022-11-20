@@ -37,6 +37,9 @@ public enum ApiExceptionEnum {
   // deal
   SELLER_INVALID_EXCEPTION(HttpStatus.UNAUTHORIZED, "빈 집의 주인만 거래 완료 처리를 할 수 있습니다."),
   DEAL_DONE_EXCEPTION(HttpStatus.BAD_REQUEST, "이미 거래 완료된 빈 집입니다."),
+
+  // user
+  USER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
 ;
 
   private final HttpStatus httpStatus;
