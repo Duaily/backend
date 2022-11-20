@@ -11,6 +11,7 @@ import com.kusitms.backend.dto.DealDto;
 import com.kusitms.backend.dto.HouseDto;
 import com.kusitms.backend.dto.HouseDto.Response;
 import com.kusitms.backend.dto.HousePreviewDto;
+import com.kusitms.backend.dto.UserDto;
 import com.kusitms.backend.exception.ApiException;
 import com.kusitms.backend.exception.ApiExceptionEnum;
 import com.kusitms.backend.repository.DealRepository;
@@ -173,6 +174,16 @@ public class HouseService implements IHouseService {
   // 빈 집 게시글의 총 개수 반환
   public int getHousePostCount() {
     return housePostRepository.findAll().size();
+  }
+
+  public UserDto getUserInfo(String email) {
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND_EXCEPTION));
+
+    return UserDto.builder()
+        .email(user.getEmail())
+        .nickname(user.getNickname())
+        .contact(user.getContact()).build();
   }
 
   @Transactional
