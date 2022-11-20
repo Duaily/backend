@@ -77,4 +77,17 @@ public class HouseController {
     return ResponseEntity.ok(BaseResponse.builder()
         .data(response).message("상세 조회 성공").build());
   }
+
+  @GetMapping("/mine")
+  public ResponseEntity<PageResponse> getMineList(
+      @RequestParam(name = "page", defaultValue = "1") Integer page) {
+
+    PageResponse response =
+        houseService.getMineList(SecurityUtil.getCurrentUserId(),
+            PageRequest.of(page - 1, 8));
+
+    response.setMessage("본인이 작성한 게시글 조회 성공");
+
+    return ResponseEntity.ok(response);
+  }
 }
