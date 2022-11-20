@@ -1,7 +1,6 @@
 package com.kusitms.backend.service;
 
 import com.kusitms.backend.dto.CheckSmsRequest;
-import com.kusitms.backend.dto.UserDto;
 
 public interface IUserService {
 
