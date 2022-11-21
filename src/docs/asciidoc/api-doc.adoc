@@ -165,6 +165,23 @@ include::{snippets}/house-list-mine/response-body.adoc[]
 ===== Response Fields
 include::{snippets}/house-list-mine/response-fields.adoc[]
 
+
+=== 3-5. 빈 집 게시글 상세 조회
+
+게시글 ID를 파라미터로 받아 빈 집 게시글을 상세 조회합니다.
+
+===== Request
+include::{snippets}/house-detail/http-request.adoc[]
+
+===== Request Example
+include::{snippets}/house-detail/path-parameters.adoc[]
+
+===== Response
+include::{snippets}/house-detail/http-response.adoc[]
+
+===== Response Example
+include::{snippets}/house-detail/response-fields.adoc[]
+
 == 4. 🏕 Region
 
 Region은 지역에 대한 게시글 작성, 상세 조회, 전체 조회, 검색, 수정, 삭제를 담당합니다.
