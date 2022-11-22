@@ -502,4 +502,60 @@ class HouseControllerTest {
                 ))
         );
   }
+
+  @Test
+  @DisplayName("빈 집 게시글 상세 조회")
+  void getHouseDetail() throws Exception {
+    final Long postId = 1L;
+
+    HouseDto.Response response = HouseDto.Response.builder()
+        .title("남해의 정겨운 숙소를 구경해보세요.")
+        .location("경상도 남해시")
+        .imageUrls(List.of("image1.address", "image2.address"))
+        .size("2435000000")
+        .purpose("주말 별장")
+        .minPrice(null)
+        .maxPrice(null)
+        .cost("800,000")
+        .deposit("1,000,000")
+        .author("Dual")
+        .contact("010-0000-0000")
+        .isPossible(true)
+        .build();
+
+    given(houseService.getDetail(postId)).willReturn(response);
+
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .get("/api/house/{postId}", postId)
+    );
+
+    resultActions.andExpect(status().isOk())
+        .andDo(print())
+        .andDo(
+            document("house-detail", getDocumentRequest(), getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("postId").description("게시글 ID")
+                ),
+                responseFields(
+                    fieldWithPath("status").description("결과 코드"),
+                    fieldWithPath("message").description("응답 메세지"),
+                    fieldWithPath("data.title").description("빈 집 게시글 제목"),
+                    fieldWithPath("data.location").description("빈 집 위치"),
+                    fieldWithPath("data.imageUrls").description("이미지 url"),
+                    fieldWithPath("data.size").description("빈 집 크기"),
+                    fieldWithPath("data.purpose").description("빈 집 용도"),
+                    fieldWithPath("data.cost").description("빈 집 가격(월세일 경우)"),
+                    fieldWithPath("data.deposit").description("빈 집 보증금(월세일 경우)"),
+                    fieldWithPath("data.minPrice").description("빈 집 최소 가격(매매일 경우)"),
+                    fieldWithPath("data.maxPrice").description("빈 집 최대 가격(매매일 경우)"),
+                    fieldWithPath("data.author").description("작성자 닉네임"),
+                    fieldWithPath("data.contact").description("작성자 전화번호"),
+                    fieldWithPath("data.possible").description("빈 집 입주 가능 여부")
+                )
+            )
+        );
+
+  }
+
 }
