@@ -134,11 +134,12 @@ public class OauthClient {
    */
   public SignInRequest signUp(AuthDto.Request authDto) {
 
+    // (1) 회원가입 처리를 위한 데이터
     SignInRequest signInRequest = SignInRequest
         .builder()
         .email(authDto.getEmail())
         .password(authDto.getEmail())
-        .isInit(false)
+        .isInit(true)
         .build();
 
     if (userRepository.findByEmail(authDto.getEmail()).isEmpty()) {
@@ -148,8 +149,6 @@ public class OauthClient {
           .nickname(authDto.getNickname())
           .authority(Authority.ROLE_USER)
           .build());
-
-      signInRequest.setInit(true);
     }
 
     return signInRequest;
