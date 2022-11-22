@@ -62,7 +62,13 @@ public class AuthService implements IAuthService {
     Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
 
     TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-    tokenDto.setInit(request.isInit()); // 첫 로그인 여부
+
+    // 전화번호 등록 여부 확인
+    String email = authentication.getName();
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND_EXCEPTION));
+
+    tokenDto.setInit(user.getContact().isEmpty()); // 전화번호 없다 -> true
 
     redisClient.setValue(authentication.getName(), tokenDto.getRefreshToken(),
         tokenProvider.getRefreshTokenExpireTime());
