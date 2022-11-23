@@ -1,4 +1,4 @@
-# Duaily - 빈집 거래 중개 플랫
+# Duaily - 빈집 거래 중개 플랫폼
 <img width="450" alt="image" src="https://user-images.githubusercontent.com/61505572/203564675-616e80f0-4e87-493c-8aaa-a0ef3b9dd4bf.png">
 
 ## 🎙 프로젝트 설명
