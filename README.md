@@ -59,7 +59,7 @@
 실행시점에 시스템 구성을 나타낸 그림입니다. 실제 사용자에서부터 데이터가 흘러가는 흐름을 파악할 수 있습니다.
 
 ## Pacakge View
-![밋업데이-아키텍처-allocation-view drawio](https://user-images.githubusercontent.com/61505572/203554023-66f5e186-625e-4536-8aab-eeb09725a277.png)
+![밋업데이-아키텍처-allocation-view drawio (1)](https://user-images.githubusercontent.com/61505572/203555516-fb6703ff-ce0f-4442-8c45-d7f9c3f69f97.png)
 
 Backend 내 프로젝트 구성입니다. 그림과 같이 Security config, Controller, Service, Repository, Domain 구성을 갖고 부가적인 요소들은 따로 표기하지 않았습니다.
 
