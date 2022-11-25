@@ -68,7 +68,7 @@ public class AuthService implements IAuthService {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ApiException(ApiExceptionEnum.USER_NOT_FOUND_EXCEPTION));
 
-    tokenDto.setInit(user.getContact().isEmpty()); // 전화번호 없다 -> true
+    tokenDto.setInit(user.getComments() == null); // 전화번호 없다 -> true
 
     redisClient.setValue(authentication.getName(), tokenDto.getRefreshToken(),
         tokenProvider.getRefreshTokenExpireTime());
