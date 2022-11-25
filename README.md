@@ -80,7 +80,7 @@ Backend 내 프로젝트 구성입니다. 그림과 같이 Security config, Cont
 
 ## 📐 Infra Architecture ( AS-IS )
 <p align="center">
-<img alt="image" src="https://user-images.githubusercontent.com/61505572/203554074-517606fc-35b4-45ea-b053-a0443ebe9417.png">
+<img alt="image" src="https://user-images.githubusercontent.com/61505572/204000448-094aae91-349a-4ef5-a6a5-96bbf7286215.png">
 </p>
 
 현재 듀얼리 시스템의 인프라 아키텍처입니다. 해당 아키텍처는 프리티어 계정으로 제한된 리소스만을 가지고 구축했다는 점을 미리 양해바랍니다. <br/>
@@ -91,7 +91,7 @@ S3 의 경우, 이미지 객체를 보관하는 용도로 구축하였습니다.
 
 ## 📐 Infra Architecture ( TO-BE )
 <p align="center">
-<img alt="image" src="https://user-images.githubusercontent.com/61505572/203554243-777cdc51-620e-4367-86d2-9a32681db6a6.png">
+<img alt="image" src="https://user-images.githubusercontent.com/61505572/204000532-fc5e68da-c15b-4e85-8249-dfeb1e53a7bc.png">
 </p>
 
 해당 아키텍처는 앞으로 확장시켜 나갈 서비스를 위한 인프라 아키텍처입니다. <br/>
